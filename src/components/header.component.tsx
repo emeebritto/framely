@@ -5,6 +5,7 @@ import Styled from 'styled-components';
 const ViewPort = Styled.header`
   display: flex;
   position: fixed;
+  z-index: 3;
   top: 0;
   left: 0;
   justify-content: space-between;

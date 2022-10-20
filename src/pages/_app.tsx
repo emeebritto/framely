@@ -6,7 +6,7 @@ import { Header, Footer } from "components";
 
 const ViewPort = Styled.div`
   position: relative;
-  padding: 0 3rem;
+  padding: 0 0;
 `
 
 

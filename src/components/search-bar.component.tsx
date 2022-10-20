@@ -21,13 +21,13 @@ const ViewPort = Styled.section`
 `
 
 const SearchInput = Styled.input`
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 40%);
   padding: 0px 11px 0px 11px;
   outline: none;
   color: white;
   border: none;
   width: 87%;
-  height: 95%;
+  height: 100%;
   border-radius: 6px 0px 0px 0px;
   border-top: 2px solid #fff;
   border-left: 2px solid #fff;
@@ -60,6 +60,14 @@ const BtnSearch = Styled.button`
   border-radius: 0px 6px 0px 0px;
   border: 2px solid #fff;
   transition: 500ms;
+
+  :hover {
+    background-color: #fff;
+  }
+
+  :hover img {
+    filter: invert(100%);
+  }
 `
 
 
@@ -89,7 +97,7 @@ const SearchBar = () => {
 	return (
     <ViewPort>
       <SearchInput 
-	      type="text" 
+	      type="text"
 	      name="seach" 
 	      value={inputData} 
 	      onInput={e => {

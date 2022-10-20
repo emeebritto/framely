@@ -17,6 +17,12 @@ export interface TranslateResponse {
 }
 
 
+export interface RandomImageRequest {
+  width:string | number;
+  height:string | number;
+}
+
+
 // API WRAPPER
 class Istatic {
   public devENV:boolean;
@@ -49,6 +55,10 @@ class Istatic {
 
   imgUrl({ path }:{ path:string }): string {
     return `${this.staticSourcesUrl}/imgs/${path}`;
+  }
+
+  randomImage({ width, height }:RandomImageRequest) {
+    return `${this.baseUrl}/random/image?width=${width}&height=${height}`
   }
 
   animatedSvgUrl({ name }:{ name:string }): string {
