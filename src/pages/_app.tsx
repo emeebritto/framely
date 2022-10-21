@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import Styled from 'styled-components';
-import { Header, Footer } from "components";
+import { Header } from "components";
 
 
 const ViewPort = Styled.div`
@@ -15,7 +15,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ViewPort>
       <Header/>
       <Component {...pageProps} />
-      <Footer/>
     </ViewPort>
   )
 }
