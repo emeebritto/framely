@@ -80,6 +80,10 @@ class Istatic {
     return axios.get(`${this.baseUrl}/search/images?${queries}`);
   }
 
+  advancedtypeAhead(query:string): Promise<any> {
+    return axios.get(`${this.baseUrl}/search/advancedtypeAhead?query=${query}`);
+  }
+
   animatedSvgUrl({ name }:{ name:string }): string {
     return `${this.staticSourcesUrl}/icons/AnimatedSvg/${name}.svg`;
   }

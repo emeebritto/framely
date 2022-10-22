@@ -3,6 +3,7 @@ import { useDebounce } from 'use-debounce';
 import { useRouter } from 'next/router';
 import Styled from 'styled-components';
 import { istatic } from "services";
+import { OptionsTypeAhead } from "components";
 // import Image from 'next/image';
 
 
@@ -72,27 +73,35 @@ const BtnSearch = Styled.button`
 
 
 const SearchBar = () => {
-	const [inputData, setInputData] = useState('');
+  const [inputData, setInputData] = useState('');
+	const [isTyping, setIsTyping] = useState(false);
+  const [typeAhead, setTypeAhead] = useState([]);
 	const [ inputDebounce ] = useDebounce(inputData, 900);
   const router = useRouter();
   let { q } = router.query;
 
-  // const filterSearch = async (value: string): Promise<void> => {
-  //   if (value.length > 1) {
-  //     setOptionsToComplete(await musiky.api.autoComplete({ input: value }).then(r => r.data));
-  //   } else {
-  //     setOptionsToComplete([]);
-  //     router.push('/search');
-  //   }
-  // }
+  const selectTypeAhead = (option: string): void => {
+    setInputData(option);
+    setIsTyping(false);
+    setTypeAhead([]);
+  }
+
+  const filterSearch = async (value: string): Promise<void> => {
+    if (value.length > 1 && isTyping) {
+      setTypeAhead(await istatic.advancedtypeAhead(value).then(r => r.data));
+    } else {
+      setTypeAhead([]);
+      // router.push('/search');
+    }
+  }
 
   useEffect(() => {
   // The q changed!
   }, [router.query.q])
 
-  // useEffect(() => {
-  //   filterSearch(inputDebounce);
-  // }, [inputDebounce])
+  useEffect(() => {
+    filterSearch(inputDebounce);
+  }, [inputDebounce])
 
 	return (
     <ViewPort>
@@ -102,6 +111,7 @@ const SearchBar = () => {
 	      value={inputData} 
 	      onInput={e => {
           let target = e.target as HTMLInputElement;
+          setIsTyping(true);
           setInputData(target.value);
         }} 
 	      placeholder="What are you looking for?"
@@ -115,6 +125,11 @@ const SearchBar = () => {
       }}>
         <img src={istatic.iconUrl({ name: "search" })} alt="search icon"/>
       </BtnSearch>
+      <OptionsTypeAhead
+        display={!!typeAhead.length}
+        resource={typeAhead} 
+        onSelect={selectTypeAhead}
+      />
     </ViewPort>
 	);
 }
