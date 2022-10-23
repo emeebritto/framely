@@ -1,0 +1,1 @@
+export { default as Frame_p9 } from "./grid-frame-p9.component";

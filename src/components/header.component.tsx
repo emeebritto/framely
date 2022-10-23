@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import Styled from 'styled-components';
 
 
@@ -29,9 +30,11 @@ const BrandingName = Styled.h4`
 const Header: React.FC = () => {
 	return (
     <ViewPort>
-      <Branding>
-        <BrandingName>Framely</BrandingName>
-      </Branding>
+      <Link href="/">
+        <Branding>
+          <BrandingName>Framely</BrandingName>
+        </Branding>
+      </Link>
     </ViewPort>
 	)
 }

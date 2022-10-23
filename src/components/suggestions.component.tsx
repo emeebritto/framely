@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useRouter } from 'next/router';
+import { useSearchContext } from "contexts";
 import Styled from "styled-components";
 
 
@@ -20,7 +22,7 @@ const Suggestion = Styled.p`
   font-size: 1.1em;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   cursor: pointer;
-  transition: 500ms;
+  transition: 400ms;
 
   :hover {
     background-color: #111111;
@@ -29,13 +31,27 @@ const Suggestion = Styled.p`
 
 
 const Suggestions = () => {
+	const { setInputData } = useSearchContext();
+	const router = useRouter();
 	const [options, setOptions] = useState(["aesthetics", "purple vibes", "books quotes", "Night", "chill", "Girls"]);
 
 	return (
 		<ViewPort>
 			{options.map((option, i) => {
 				return (
-					<Suggestion key={i}>{option}</Suggestion>
+					<Suggestion
+						onClick={e => {
+							setInputData(option);
+			        router.push(
+			          `${router.route}/?q=${option.replace(/\s/gi, "::")}`,
+			          undefined,
+			          { shallow: true }
+			        )
+						}}
+						key={i}
+					>
+						{option}
+					</Suggestion>
 				)
 			})}
 		</ViewPort>

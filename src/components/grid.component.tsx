@@ -1,5 +1,6 @@
 import React from "react";
 import Styled from "styled-components";
+import { GridFrame } from "components";
 
 
 const ViewPort = Styled.section`
@@ -17,24 +18,25 @@ const Columm = Styled.div`
 
 
 const Grid = ({ source, FrameType }) => {
-	const medium = Math.ceil(source.length / 2) + 1;
+	const medium = Math.floor(source.length / 2) + 1;
 	const first_column = [...source].splice(0, medium);
 	const second_column = [...source].splice(medium, medium * 2);
 	// // 2 % 3 == 0
+
 
 	return (
 		<ViewPort>
 			<Columm margin="20px 15px 25px 0">
 				{first_column.map((frame, i) => {
 					return (
-						<FrameType src={frame} key={i}/>
+						<GridFrame type={frame.frameType} src={frame} key={i}/>
 					);
 				})}
 			</Columm>
 			<Columm margin="20px 0 25px 0">
 				{second_column.map((frame, i) => {
 					return (
-						<FrameType src={frame} key={i}/>
+						<GridFrame type={frame.frameType} src={frame} key={i}/>
 					);
 				})}
 			</Columm>

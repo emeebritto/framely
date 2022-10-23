@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useDebounce } from 'use-debounce';
 import { useRouter } from 'next/router';
 import Styled from 'styled-components';
 import { istatic } from "services";
+import { useSearchContext } from "contexts";
 import { OptionsTypeAhead } from "components";
 // import Image from 'next/image';
 
@@ -73,47 +73,34 @@ const BtnSearch = Styled.button`
 
 
 const SearchBar = () => {
-  const [inputData, setInputData] = useState('');
-	const [isTyping, setIsTyping] = useState(false);
-  const [typeAhead, setTypeAhead] = useState([]);
-	const [ inputDebounce ] = useDebounce(inputData, 900);
+  const {
+    inputData,
+    setInputData,
+    setIsTyping,
+    typeAhead,
+    setTypeAhead,
+    selectTypeAhead
+  } = useSearchContext();
   const router = useRouter();
-  let { q } = router.query;
 
-  const selectTypeAhead = (option: string): void => {
-    setInputData(option);
-    setIsTyping(false);
-    setTypeAhead([]);
-  }
-
-  const filterSearch = async (value: string): Promise<void> => {
-    if (value.length > 1 && isTyping) {
-      setTypeAhead(await istatic.advancedtypeAhead(value).then(r => r.data));
-    } else {
-      setTypeAhead([]);
-      // router.push('/search');
-    }
-  }
-
-  useEffect(() => {
-  // The q changed!
-  }, [router.query.q])
-
-  useEffect(() => {
-    filterSearch(inputDebounce);
-  }, [inputDebounce])
 
 	return (
     <ViewPort>
       <SearchInput 
 	      type="text"
 	      name="seach" 
-	      value={inputData} 
+	      value={inputData}
 	      onInput={e => {
           let target = e.target as HTMLInputElement;
           setIsTyping(true);
           setInputData(target.value);
-        }} 
+        }}
+        onBlur={e => {
+          setTimeout(() => {
+            setIsTyping(false);
+            setTypeAhead([]);
+          }, 200);
+        }}
 	      placeholder="What are you looking for?"
       />
       <BtnSearch onClick={e=> {

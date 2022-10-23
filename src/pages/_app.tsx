@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
+import { SearchProvider } from "contexts/providers";
 import Styled from 'styled-components';
 import { Header } from "components";
 
@@ -14,7 +15,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ViewPort>
       <Header/>
-      <Component {...pageProps} />
+        <SearchProvider>
+          <Component {...pageProps} />
+        </SearchProvider>
     </ViewPort>
   )
 }

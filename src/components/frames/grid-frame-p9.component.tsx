@@ -2,7 +2,6 @@ import React from "react";
 import Image from "next/image";
 import Styled from "styled-components";
 import { istatic } from "services";
-import { Frame_p9 } from "./frames";
 
 
 const ViewPort = Styled.section`
@@ -29,20 +28,18 @@ const FadeOut = Styled.div`
 
 const Img = Styled.img`
 	width: 100%;
-	margin: 10px 0;
+	margin: 5px 0;
 `
 
 
-const GridFrame = ({ type, src }) => {
-
-	if (type == "Frame_p9") return <Frame_p9 src={src}/>
+const Frame_p9 = ({ src }) => {
 
 	return (
 		<ViewPort>
 			<FadeOut/>
-			<Img src={src.url} alt="Ramdom Image"/>
+			<Img src={src.images.orig.url} alt={src.grid_title}/>
 		</ViewPort>
 	);
 }
 
-export default GridFrame;
+export default Frame_p9;

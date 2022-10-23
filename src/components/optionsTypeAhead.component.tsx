@@ -61,7 +61,7 @@ const OptionsTypeAhead: React.FC<OptionsTypeAheadProps> = ({
 		<ViewPort display={display}>
 			{src.map((option, index) => {
 				return(
-					<Link href={`${router.route}?q=${option.query}`}>
+					<Link href={`${router.route}?q=${option.query.replace(/\s/gi, '::')}`}>
 						<Option onClick={(e) => {
 							e.stopPropagation();
 							onSelect(option.query);
