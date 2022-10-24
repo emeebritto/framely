@@ -75,8 +75,8 @@ class Istatic {
     return axios.get(`${this.baseUrl}/random/image/list?${config}`);
   }
 
-  searchImage(query:string, cnf:{page?:string, per_page?:string}):Promise<any> {
-    const queries = `query=${query}&page=${cnf?.page || 1}&per_page=${cnf?.per_page || 2}`;
+  searchImage(query:string, cnf:{page?:string, per_page?:string, bookmark?:string}):Promise<any> {
+    const queries = `query=${query}&page=${cnf?.page || 1}&per_page=${cnf?.per_page || 2}&bookmark=${cnf?.bookmark || ''}`;
     return axios.get(`${this.baseUrl}/search/images?${queries}`);
   }
 

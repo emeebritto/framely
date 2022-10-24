@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from '../styles/Home.module.css';
 import { useRouter } from 'next/router';
 import Styled from 'styled-components';
@@ -99,31 +99,73 @@ const Content = Styled.section`
   position: absolute;
   top: 700px;
   line-height: 22px;
-  padding: 30px 10% 0 10%;
+  padding: 30px 9% 0 9%;
   background-color: #000;
+`
+
+const LoadNewZone = Styled.section`
+  width: 40px;
+  height: 40px;
+  background-color: red;
 `
 
 
 const Home: NextPage = () => {
-  const [frames, setFrames] = useState([]);
+  const [frames, setFrames] = useState([[], []]);
   const [label, setLabel] = useState('');
   const [bookmark, setBookmark] = useState('');
+  const ref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+
+  const splitData = (data:any[]):any[] => {
+    const medium = Math.floor(data.length / 2);
+    const first_column = [...data].splice(0, medium);
+    const second_column = [...data].splice(medium, medium * 2);
+    return [first_column, second_column];
+  };
 
   const load_images = async() => {
     istatic.listRandomImage({ per_page: 8 }).then(r => {
-      setFrames(r.data);
+      const splitedData = splitData(r.data);
+      setFrames(splitedData);
       setLabel("Quick Picks");
     });
   };
 
   const search_images = async(query:string) => {
-    istatic.searchImage(query, { per_page: 24 }).then(r => {
-      setFrames(r.data.results);
+    istatic.searchImage(query, { per_page: 23 }).then(r => {
+      const splitedData = splitData(r.data.results);
+      setFrames(splitedData);
       setBookmark(r.data.bookmark);
       setLabel(r.data.query);
     });
   };
+
+  const load_more_images = (query:string) => {
+    istatic.searchImage(query, { per_page: 23, bookmark }).then(r => {
+      const splitedData = splitData(r.data.results);
+      setFrames(currentFrames => {
+        return [
+          [...currentFrames[0], ...splitedData[0]],
+          [...currentFrames[1], ...splitedData[1]]
+        ]
+      });
+      setBookmark(r.data.bookmark);
+    });
+  };
+
+  useEffect(() => {
+    const node = ref?.current // DOM Ref
+    if (!node) return
+    const intersectionObserver = new IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        let { q } = router.query;
+        if (q) load_more_images(q);
+      }
+    })
+    intersectionObserver.observe(node);
+    return () => intersectionObserver.disconnect();
+  }, [router.query.q, bookmark]);
 
   useEffect(() => {
   // The q changed!
@@ -147,6 +189,7 @@ const Home: NextPage = () => {
       <Content>
         <Label>{ label }</Label>
         <Grid source={frames} FrameType={GridFrame}/>
+        <LoadNewZone ref={ref}/>
         <Footer/>
       </Content>
 
