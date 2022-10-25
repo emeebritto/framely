@@ -32,10 +32,10 @@ const Img = Styled.img`
 `
 
 
-const Frame_u8 = ({ src }) => {
+const Frame_u8 = ({ src, onSelect }) => {
 
 	return (
-		<ViewPort>
+		<ViewPort onClick={e => {if (onSelect) onSelect(src)}}>
 			<FadeOut/>
 			<Img src={src.urls.regular} alt={src.alt_description}/>
 		</ViewPort>

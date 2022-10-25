@@ -29,14 +29,14 @@ const FadeOut = Styled.div`
 
 const Img = Styled.img`
 	width: 100%;
-	margin: 10px 0;
+	margin: 5px 0;
 `
 
 
-const GridFrame = ({ type, src }) => {
+const GridFrame = ({ type, src, onSelect }) => {
 
-	if (type == "Frame_p9") return <Frame_p9 src={src}/>
-	if (type == "Frame_u8") return <Frame_u8 src={src}/>
+	if (type == "Frame_p9") return <Frame_p9 onSelect={onSelect} src={src}/>
+	if (type == "Frame_u8") return <Frame_u8 onSelect={onSelect} src={src}/>
 
 	return (
 		<ViewPort>

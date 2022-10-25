@@ -10,11 +10,13 @@ import {
   Suggestions,
   Grid,
   GridFrame,
+  FullView,
   Footer
 } from "components";
 
 
 const ViewPort = Styled.div`
+  position: relative;
   padding: 0 0 0 0;
   perspective: 1px;
   height: 100vh;
@@ -112,6 +114,7 @@ const LoadNewZone = Styled.section`
 
 const Home: NextPage = () => {
   const [frames, setFrames] = useState([[], []]);
+  const [targetSrc, setTargetSrc] = useState(null);
   const [label, setLabel] = useState('');
   const [bookmark, setBookmark] = useState('');
   const ref = useRef<HTMLDivElement | null>(null);
@@ -179,6 +182,11 @@ const Home: NextPage = () => {
   // },[]);
 
   return (
+    <>
+    <FullView
+      src={targetSrc}
+      onRequestClose={() => setTargetSrc(null)}
+    />
     <ViewPort>
       <Head>
         <title>Framely</title>
@@ -186,9 +194,14 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+
       <Content>
         <Label>{ label }</Label>
-        <Grid source={frames} FrameType={GridFrame}/>
+        <Grid
+          source={frames}
+          FrameType={GridFrame}
+          onSelect={src => setTargetSrc(src)}
+        />
         <LoadNewZone ref={ref}/>
         <Footer/>
       </Content>
@@ -202,6 +215,7 @@ const Home: NextPage = () => {
       </Queries>
 
     </ViewPort>
+    </>
   )
 }
 

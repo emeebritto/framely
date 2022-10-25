@@ -18,7 +18,7 @@ const Columm = Styled.div`
 `
 
 
-const Grid = ({ source, FrameType }) => {
+const Grid = ({ source, FrameType, onSelect }) => {
 	// // 2 % 3 == 0
 
 	return (
@@ -28,7 +28,12 @@ const Grid = ({ source, FrameType }) => {
 						<Columm margin="25px 6px" key={`col-${idx}`}>
 							{col_src.map((frame, i) => {
 								return (
-									<GridFrame type={frame.frameType} src={frame} key={i}/>
+									<GridFrame
+										onSelect={onSelect}
+										type={frame.frameType}
+										src={frame}
+										key={i}
+									/>
 								);
 							})}
 						</Columm>
