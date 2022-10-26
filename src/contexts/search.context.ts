@@ -12,7 +12,9 @@ export function useSearchContext(){
 		isTyping,
 		setIsTyping,
 		typeAhead,
-		setTypeAhead
+		setTypeAhead,
+		queriesSuggestions,
+		setQueriesSuggestions
 	} = useContext(SearchContext);
 
 
@@ -29,7 +31,7 @@ export function useSearchContext(){
   const filterSearch = async (value: string): Promise<void> => {
     if (value.length > 0 && isTyping) {
       setTypeAhead(await istatic.advancedtypeAhead(value).then(r => r.data));
-    } else if (!value.length) {
+    } else if (!value.length && isTyping) {
     	router.push('/');
     } else {
       setTypeAhead([]);
@@ -37,8 +39,14 @@ export function useSearchContext(){
   }
 
   useEffect(() => {
+  	istatic.images_queries({ totalResult: 8 }).then(r => {
+  		setQueriesSuggestions(r.data);
+  	});
+  }, []);
+
+  useEffect(() => {
     filterSearch(inputDebounce);
-  }, [inputDebounce])
+  }, [inputDebounce]);
 
 
 	return {
@@ -49,6 +57,7 @@ export function useSearchContext(){
 		typeAhead,
 		setTypeAhead,
 		selectTypeAhead,
-		filterSearch
+		filterSearch,
+		queriesSuggestions
 	}
 }

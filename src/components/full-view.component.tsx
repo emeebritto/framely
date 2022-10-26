@@ -39,6 +39,7 @@ const CloseBtn = Styled.button`
 
 interface FullViewProp {
 	src?:any | null;
+	onRequestClose?:((s?:any) => any);
 }
 
 const FullView: React.FC = ({ src, onRequestClose=(()=> ({}))}) => {

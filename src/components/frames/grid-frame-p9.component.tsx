@@ -32,6 +32,11 @@ const Img = Styled.img`
 `
 
 
+interface Frame_p9Props {
+	src:any;
+	onSelect?: ((s:any) => void);
+}
+
 const Frame_p9 = ({ src, onSelect }) => {
 
 	return (

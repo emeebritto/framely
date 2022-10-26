@@ -31,13 +31,12 @@ const Suggestion = Styled.p`
 
 
 const Suggestions = () => {
-	const { setInputData } = useSearchContext();
+	const { setInputData, queriesSuggestions } = useSearchContext();
 	const router = useRouter();
-	const [options, setOptions] = useState(["aesthetics", "purple vibes", "books quotes", "Night", "chill", "Girls"]);
 
 	return (
 		<ViewPort>
-			{options.map((option, i) => {
+			{queriesSuggestions.map((option, i) => {
 				return (
 					<Suggestion
 						onClick={e => {

@@ -108,7 +108,6 @@ const Content = Styled.section`
 const LoadNewZone = Styled.section`
   width: 40px;
   height: 40px;
-  background-color: red;
 `
 
 
@@ -119,6 +118,7 @@ const Home: NextPage = () => {
   const [bookmark, setBookmark] = useState('');
   const ref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+
 
   const splitData = (data:any[]):any[] => {
     const medium = Math.floor(data.length / 2);
@@ -148,10 +148,9 @@ const Home: NextPage = () => {
     istatic.searchImage(query, { per_page: 23, bookmark }).then(r => {
       const splitedData = splitData(r.data.results);
       setFrames(currentFrames => {
-        return [
-          [...currentFrames[0], ...splitedData[0]],
-          [...currentFrames[1], ...splitedData[1]]
-        ]
+        return currentFrames.map((col, idx) => {
+          return [...col, ...splitedData[idx]];
+        });
       });
       setBookmark(r.data.bookmark);
     });
@@ -177,9 +176,6 @@ const Home: NextPage = () => {
   else { load_images(); }
   }, [router.query.q])
 
-  // useEffect(() => {
-  //   load_images()
-  // },[]);
 
   return (
     <>

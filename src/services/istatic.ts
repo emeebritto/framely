@@ -92,6 +92,10 @@ class Istatic {
     return axios.get(`${this.staticSourcesUrl}/${pathName}`);
   }
 
+  images_queries(q:{totalResult?:number}):Promise<any> {
+    return axios.get(`${this.baseUrl}/search/suggestions?totalResult=${q?.totalResult || ""}`);
+  }
+
   dictionary({ word }:{ word:string }): Promise<DictionaryResponse> {
     return axios.get(`${this.baseUrl}/itools/dictionary?word=${word}`);
   }

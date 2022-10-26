@@ -8,6 +8,7 @@ export default function SearchProvider({ children }){
 	const [inputData, setInputData] = useState('');
 	const [isTyping, setIsTyping] = useState(false);
   const [typeAhead, setTypeAhead] = useState([]);
+  const [queriesSuggestions, setQueriesSuggestions] = useState([]);
   const [ inputDebounce ] = useDebounce(inputData, 900);
 
 	return (
@@ -18,7 +19,9 @@ export default function SearchProvider({ children }){
 			isTyping,
 			setIsTyping,
 			typeAhead,
-			setTypeAhead
+			setTypeAhead,
+			queriesSuggestions,
+			setQueriesSuggestions
 		}}>
 			{ children }
 		</SearchContext.Provider>
