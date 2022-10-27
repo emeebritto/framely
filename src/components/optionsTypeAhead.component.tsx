@@ -7,8 +7,8 @@ import Styled from 'styled-components';
 
 const ViewPort = Styled.section`
 	position: absolute;
-	display: ${(props: {display?:boolean}) => (
-		props?.display ? "" : "none"
+	display: ${(props: {show?:boolean}) => (
+		props?.show ? "" : "none"
 	)};
 	z-index: 100;
 	color: #fff;
@@ -43,13 +43,13 @@ const Option = Styled.a`
 `
 
 interface OptionsTypeAheadProps {
-	display?:boolean;
+	show?:boolean;
 	resource:Array<string>;
 	onSelect:(s: string) => void;
 }
 
 const OptionsTypeAhead: React.FC<OptionsTypeAheadProps> = ({
-	display=true,
+	show=true,
 	resource,
 	onSelect
 }) => {
@@ -58,7 +58,7 @@ const OptionsTypeAhead: React.FC<OptionsTypeAheadProps> = ({
   const src = [...resource].splice(0, 8);
 
 	return(
-		<ViewPort display={display}>
+		<ViewPort show={show}>
 			{src.map((option, index) => {
 				return(
 					<Link href={`${router.route}?q=${option.query.replace(/\s/gi, '::')}`}>

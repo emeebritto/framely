@@ -113,7 +113,7 @@ const SearchBar = () => {
         <img src={istatic.iconUrl({ name: "search" })} alt="search icon"/>
       </BtnSearch>
       <OptionsTypeAhead
-        display={!!typeAhead.length}
+        show={!!typeAhead.length}
         resource={typeAhead} 
         onSelect={selectTypeAhead}
       />

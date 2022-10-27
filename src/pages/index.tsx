@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import Styled from 'styled-components';
 import type { NextPage } from 'next';
 import { istatic } from "services";
-import Head from 'next/head';
 import {
   SearchBar,
   Suggestions,
@@ -184,19 +183,12 @@ const Home: NextPage = () => {
       onRequestClose={() => setTargetSrc(null)}
     />
     <ViewPort>
-      <Head>
-        <title>Framely</title>
-        <meta name="description" content="Each frame, one History"/>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-
       <Content>
         <Label>{ label }</Label>
         <Grid
           source={frames}
           FrameType={GridFrame}
-          onSelect={src => setTargetSrc(src)}
+          onSelect={src => router.push(`/frame/${src.id}`)}
         />
         <LoadNewZone ref={ref}/>
         <Footer/>

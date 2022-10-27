@@ -80,6 +80,14 @@ class Istatic {
     return axios.get(`${this.baseUrl}/search/images?${queries}`);
   }
 
+  getImage(id:string):Promise<any> {
+    return axios.get(`${this.baseUrl}/image/${id}`);
+  }
+
+  getRelatedImage(id:string, bookmark?:string = ""):Promise<any> {
+    return axios.get(`${this.baseUrl}/image/${id}/related?bookmark=${bookmark}`);
+  }
+
   advancedtypeAhead(query:string): Promise<any> {
     return axios.get(`${this.baseUrl}/search/advancedtypeAhead?query=${query}`);
   }
