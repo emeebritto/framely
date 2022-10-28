@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from '../styles/Home.module.css';
+import { useSearchContext } from "contexts";
 import { useRouter } from 'next/router';
 import Styled from 'styled-components';
 import type { NextPage } from 'next';
 import { istatic } from "services";
+import { splitData } from "utils";
 import {
   SearchBar,
   Suggestions,
@@ -113,18 +115,11 @@ const LoadNewZone = Styled.section`
 const Home: NextPage = () => {
   const [frames, setFrames] = useState([[], []]);
   const [targetSrc, setTargetSrc] = useState(null);
+  const { setInputData } = useSearchContext();
   const [label, setLabel] = useState('');
   const [bookmark, setBookmark] = useState('');
   const ref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
-
-
-  const splitData = (data:any[]):any[] => {
-    const medium = Math.floor(data.length / 2);
-    const first_column = [...data].splice(0, medium);
-    const second_column = [...data].splice(medium, medium * 2);
-    return [first_column, second_column];
-  };
 
   const load_images = async() => {
     istatic.listRandomImage({ per_page: 8 }).then(r => {
@@ -169,11 +164,16 @@ const Home: NextPage = () => {
   }, [router.query.q, bookmark]);
 
   useEffect(() => {
-  // The q changed!
-  let { q } = router.query;
-  if (q) { search_images(q); }
-  else { load_images(); }
-  }, [router.query.q])
+    // The q changed!
+    let { q } = router.query;
+    if (q) {
+      search_images(q);
+      setInputData(q.replace(/::/g, " "));
+    } else {
+      load_images();
+      setInputData("");
+    }
+  }, [router.query.q]);
 
 
   return (

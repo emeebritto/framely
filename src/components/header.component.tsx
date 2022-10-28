@@ -1,6 +1,7 @@
-import React from 'react';
-import Link from 'next/link';
 import Styled from 'styled-components';
+import { istatic } from "services";
+import Link from 'next/link';
+import React from 'react';
 
 
 const ViewPort = Styled.header`
@@ -16,13 +17,16 @@ const ViewPort = Styled.header`
 `
 
 const Branding = Styled.span`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
   margin-left: 3em;
   cursor: pointer;
 `
 
-const BrandingName = Styled.h4`
-  font-weight: bold;
-  font-size: 1.5em;
+const BrandingImg = Styled.img`
+  height: 90px;
 `
 
 
@@ -32,7 +36,10 @@ const Header: React.FC = () => {
     <ViewPort>
       <Link href="/">
         <Branding>
-          <BrandingName>Framely</BrandingName>
+          <BrandingImg
+            src={istatic.imgUrl({ path: "branding/Framely.png" })}
+            alt="Framely Branding"
+          />
         </Branding>
       </Link>
     </ViewPort>

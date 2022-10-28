@@ -1,8 +1,9 @@
+import React, { useState, useEffect, useRef } from "react";
 import type { NextPage, GetServerSideProps } from 'next';
-import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import Styled from 'styled-components';
 import { istatic } from "services";
+import { splitData } from "utils";
 import cache from "memory-cache";
 import Head from 'next/head';
 import {
@@ -18,6 +19,11 @@ const ViewPort = Styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
+`
+
+const FrameView = Styled.img`
+  min-height: 25vh;
+  max-height: 60vh;
 `
 
 const Alert = Styled.section`
@@ -36,28 +42,76 @@ const Alert = Styled.section`
 `
 
 const Related = Styled.section`
+  padding: 30px 9% 0 9%;
+  background-color: #000;
+`
+
+const LabelWrapper = Styled.section`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 20px 0 0 0;
-  background-color: #090E19;
+  margin: 10px 0;
+`
+
+const Label = Styled.h2`
+  color: #fff;
+  margin: 0 15px;
+`
+
+const Ship = Styled.button`
+  border: none;
+  border-radius: 12px;
+  font-size: 1em;
+  margin: 0 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+`
+
+const LoadNewZone = Styled.section`
+  width: 40px;
+  height: 40px;
+  background-color: red;
 `
 
 
-const Frame: NextPage = ({ pageContent }) => {
-  console.log({pageContent});
-  const [relatedFrames, setRelatedFrames] = useState([]);
-  const [bookmark, setBookmark] = useState([]);
+const Frame: NextPage = ({ pagContent }) => {
+  console.log({pagContent});
+  const [relatedFrames, setRelatedFrames] = useState(pagContent.relatedFrames.result);
+  const [bookmark, setBookmark] = useState(pagContent.relatedFrames.bookmark);
+  const ref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
-  // useEffect(()=>{
-  //     istatic.getRelatedImage(pageContent.id).then(r => {
-  //       setRelatedFrames(r.data.results);
-  //       setBookmark(r.data.bookmark);
-  //     });
-  // },[])
 
-  if (!pageContent) {
+  const load_more_images = async(id:string) => {
+    istatic.getRelatedImage(id, bookmark).then(r => {
+      const splitedData = splitData(r.data.result);
+      setRelatedFrames(currentFrames => {
+        return currentFrames.map((col, idx) => {
+          return [...col, ...splitedData[idx]];
+        });
+      });
+      setBookmark(r.data.bookmark);
+    });
+  };
+
+  useEffect(() => {
+    const node = ref?.current // DOM Ref
+    if (!node) return
+    const intersectionObserver = new IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        load_more_images(pagContent.id);
+      }
+    })
+    intersectionObserver.observe(node);
+    return () => intersectionObserver.disconnect();
+  }, [bookmark]);
+
+  useEffect(() => {
+    setRelatedFrames(pagContent.relatedFrames.result);
+    setBookmark(pagContent.relatedFrames.bookmark);
+  }, [pagContent]);
+
+
+  if (!pagContent) {
     return (
       <>
       <Head>
@@ -70,20 +124,41 @@ const Frame: NextPage = ({ pageContent }) => {
     )
   }
 
+
+  console.log({ relatedFrame: relatedFrames[0][0] });
+
   return (
     <ViewPort>
       <Head>
-        <title>Framely</title>
+        <title>Frame | {pagContent.title || pagContent.seo_title}</title>
       </Head>
 
-      <img src={pageContent.images.orig.url} alt={pageContent.grid_title}/>
+      <FrameView
+        src={pagContent.images.orig.url}
+        alt={pagContent.grid_title}
+      />
       <Related>
-        <h2>Related</h2>
+        <LabelWrapper>
+          <Label>Related:</Label>
+          {pagContent.pin_join.visual_annotation.map((rel, i) => {
+            if (i >= 5) return false;
+            return (
+              <Ship
+                onClick={() => {
+                  router.push(`/?q=${rel.replace(/\s/gi, "::")}`);
+                }}
+              >
+                { rel }
+              </Ship>
+            );
+          })}
+        </LabelWrapper>
         <Grid
-          source={pageContent.relatedFrames.result}
+          source={relatedFrames}
           FrameType={GridFrame}
           onSelect={src => router.push(`/frame/${src.id}`)}
         />
+        <LoadNewZone ref={ref}/>
       </Related>
       <Footer/>
     </ViewPort>
@@ -95,35 +170,28 @@ export default Frame;
 
 export const getServerSideProps: GetServerSideProps = async(context) => {
   let id = String(context?.params?.id || '');
-  let pageContent: any | null = null;
+  let pagContent: any | null = null;
 
-  if (!id) return { props: { pageContent } };
-
-  const splitData = (data:any[]):any[] => {
-    const medium = Math.floor(data.length / 2);
-    const first_column = [...data].splice(0, medium);
-    const second_column = [...data].splice(medium, medium * 2);
-    return [first_column, second_column];
-  };
+  if (!id) return { props: { pagContent } };
 
   const KEY = `image::${id}`;
   const cachedResponse = cache.get(KEY);
 
   if (cachedResponse) {
-    pageContent = cachedResponse;
+    pagContent = cachedResponse;
   } else {
-    pageContent = await istatic.getImage(id).then(r => r.data).catch(err => null);
-    if (pageContent) {
-      pageContent.relatedFrames = await istatic.getRelatedImage(pageContent.id)
+    pagContent = await istatic.getImage(id).then(r => r.data).catch(err => null);
+    if (pagContent) {
+      pagContent.relatedFrames = await istatic.getRelatedImage(pagContent.id)
         .then(r => ({
           result: splitData(r.data.result),
           bookmark: r.data.bookmark
         }));
-      cache.put(KEY, pageContent, 60 * 60000); // one hour total
+      cache.put(KEY, pagContent, 60 * 60000); // one hour total
     }
   }
 
   return {
-    props: { pageContent }, // will be passed to the page component as props
+    props: { pagContent }, // will be passed to the page component as props
   }
 }
