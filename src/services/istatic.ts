@@ -37,9 +37,10 @@ class Istatic {
   private staticSourcesUrl:string;
   constructor() {
     this.devENV = process.env.NODE_ENV === 'development';
-    this.istaticDEV = `http://localhost:${9872}`;
+    this.istaticDEV = `http://192.168.0.109:${9872}`;
     this.istaticPROD = 'https://cdn-istatics.herokuapp.com';
     this.baseUrl = this.devENV ? this.istaticDEV : this.istaticPROD;
+    console.log({ "istatic (addr)": this.baseUrl });
     this.staticSourcesUrl = `${this.baseUrl}/static`;
     this.random_counter = 0;
   }
