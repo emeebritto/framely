@@ -101,6 +101,7 @@ const Content = Styled.section`
   z-index: 2;
   position: absolute;
   top: 700px;
+  width: 100vw;
   line-height: 22px;
   padding: 30px 9% 0 9%;
   background-color: #000;
@@ -121,7 +122,7 @@ const Home: NextPage = () => {
   const ref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
-  const load_images = async() => {
+  const load_images = ():void => {
     istatic.listRandomImage({ per_page: 8 }).then(r => {
       const splitedData = splitData(r.data);
       setFrames(splitedData);
@@ -129,7 +130,7 @@ const Home: NextPage = () => {
     });
   };
 
-  const search_images = async(query:string) => {
+  const search_images = async(query:string):void => {
     istatic.searchImage(query, { per_page: 23 }).then(r => {
       const splitedData = splitData(r.data.results);
       setFrames(splitedData);
@@ -138,7 +139,7 @@ const Home: NextPage = () => {
     });
   };
 
-  const load_more_images = (query:string) => {
+  const load_more_images = (query:string):void => {
     istatic.searchImage(query, { per_page: 23, bookmark }).then(r => {
       const splitedData = splitData(r.data.results);
       setFrames(currentFrames => {

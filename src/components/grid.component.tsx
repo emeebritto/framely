@@ -14,7 +14,7 @@ const Columm = Styled.div`
 	display: flex;
 	flex-direction: column;
 	margin: ${(props:{margin?:string}) => (props.margin)};
-	max-width: 48%;
+	width: 48%;
 `
 
 

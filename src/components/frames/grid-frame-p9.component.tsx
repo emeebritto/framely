@@ -6,24 +6,69 @@ import { istatic } from "services";
 
 const ViewPort = Styled.section`
 	position: relative;
-	width: 100%
+	width: 100%;
+	background-color: rgba(255, 255, 255, 0.05);
+	min-height: 10vh;
 `
 
 const FadeOut = Styled.div`
   position: absolute;
-  background-color: #000;
-  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.0);
   z-index: 0;
-  top: 0;
+  top: 5px;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 14px);
+  box-shadow: inset 0 -60px 50px #000;
   cursor: pointer;
   transition: 400ms;
 
   :hover {
-  	opacity: 50%;
+  	background-color: rgba(0, 0, 0, 0.5);
   }
+`
+
+const VideoInfor = Styled.section`
+`
+
+const Duration = Styled.p`
+	display: inline-block;
+	margin: 15px 10px;
+	background-color: #000;
+	border-radius: 14px;
+	padding: 5px 10px;
+`
+
+const Profile = Styled.section`
+	display: flex;
+	align-items: center;
+`
+
+const ProfileImg = Styled.img`
+	border-radius: 50%;
+	height: 50px;
+	margin: 15px 10px;
+`
+
+const Identify = Styled.section`
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	height: 60%;
+	margin-left: 10px;
+`
+
+const DisplayName = Styled.p`
+	margin: 0;
+`
+
+const UserName = Styled.p`
+	opacity: 80%;
+	font-size: 0.8em;
+	margin: 0;
 `
 
 const Img = Styled.img`
@@ -37,11 +82,39 @@ interface Frame_p9Props {
 	onSelect?: ((s:any) => void);
 }
 
-const Frame_p9 = ({ src, onSelect }) => {
+interface FrameDurationProps {
+	frame:any;
+}
+
+const Frame_p9: React.FC<Frame_p9Props> = ({ src, onSelect }) => {
+	const FrameDuration: React.FC<FrameDurationProps> = ({ frame }) => {
+		const video = src?.videos?.video_list?.V_EXP7;
+		const stories = src?.story_pin_data?.pages;
+		const first_story_video = stories ? stories[0]?.blocks[0]?.video?.video_list?.V_EXP7 : null;
+
+		if (!video && !first_story_video) return (<></>);
+		return (
+			<Duration>{ video?.duration || first_story_video?.duration }</Duration>			
+		);
+	};
 
 	return (
 		<ViewPort onClick={e => {if (onSelect) onSelect(src)}}>
-			<FadeOut/>
+			<FadeOut>
+				<VideoInfor>
+					<FrameDuration frame={src}/>
+				</VideoInfor>
+				<Profile>
+					<ProfileImg
+						src={src.pinner.image_medium_url || src.pinner.image_large_url}
+						alt={`${src.pinner.full_name} profile image`}
+					/>
+					<Identify>
+						<DisplayName>{ src.pinner.full_name }</DisplayName>
+						<UserName>{ src.pinner.username }</UserName>
+					</Identify>
+				</Profile>
+			</FadeOut>
 			<Img src={src.images.orig.url} alt={src.grid_title}/>
 		</ViewPort>
 	);

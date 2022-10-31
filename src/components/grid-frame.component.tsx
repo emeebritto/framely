@@ -7,7 +7,7 @@ import { Frame_p9, Frame_u8 } from "./frames";
 
 const ViewPort = Styled.section`
 	position: relative;
-	width: 100%
+	width: 100%;
 `
 
 const FadeOut = Styled.div`
