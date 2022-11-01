@@ -4,5 +4,7 @@ export { default as OptionsTypeAhead } from "./optionsTypeAhead.component";
 export { default as Grid } from "./grid.component";
 export { default as GridFrame } from "./grid-frame.component";
 export { default as FullView } from "./full-view.component";
+export { default as FrameView } from "./frame-view.component";
 export { default as Footer } from "./footer.component";
 export { default as Suggestions } from "./suggestions.component";
+export { default as VideoPlayer } from "./video-player.component";

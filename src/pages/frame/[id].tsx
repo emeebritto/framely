@@ -11,6 +11,7 @@ import {
   Suggestions,
   Grid,
   GridFrame,
+  FrameView,
   Footer
 } from "components";
 
@@ -21,10 +22,10 @@ const ViewPort = Styled.section`
   align-items: center;
 `
 
-const FrameView = Styled.img`
-  min-height: 25vh;
-  max-height: 60vh;
-`
+// const FrameView = Styled.img`
+//   min-height: 25vh;
+//   max-height: 60vh;
+// `
 
 const Alert = Styled.section`
   display: flex;
@@ -125,18 +126,13 @@ const Frame: NextPage = ({ pagContent }) => {
   }
 
 
-  console.log({ relatedFrame: relatedFrames[0][0] });
-
   return (
     <ViewPort>
       <Head>
         <title>Frame | {pagContent.title || pagContent.seo_title}</title>
       </Head>
 
-      <FrameView
-        src={pagContent.images.orig.url}
-        alt={pagContent.grid_title}
-      />
+      <FrameView frame={pagContent}/>
       <Related>
         <LabelWrapper>
           <Label>Related:</Label>

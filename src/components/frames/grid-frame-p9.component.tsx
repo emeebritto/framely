@@ -2,13 +2,16 @@ import React from "react";
 import Image from "next/image";
 import Styled from "styled-components";
 import { istatic } from "services";
+import { fromSecondsToTime } from "utils";
 
 
 const ViewPort = Styled.section`
 	position: relative;
 	width: 100%;
-	background-color: rgba(255, 255, 255, 0.05);
+	background-color: rgba(255, 255, 255, 0.03);
 	min-height: 10vh;
+	border-radius: 20px;
+	overflow: hidden;
 `
 
 const FadeOut = Styled.div`
@@ -21,7 +24,7 @@ const FadeOut = Styled.div`
   top: 5px;
   left: 0;
   width: 100%;
-  height: calc(100% - 14px);
+  height: calc(100% - 13px);
   box-shadow: inset 0 -60px 50px #000;
   cursor: pointer;
   transition: 400ms;
@@ -74,6 +77,7 @@ const UserName = Styled.p`
 const Img = Styled.img`
 	width: 100%;
 	margin: 5px 0;
+	border-radius: 20px;
 `
 
 
@@ -93,8 +97,9 @@ const Frame_p9: React.FC<Frame_p9Props> = ({ src, onSelect }) => {
 		const first_story_video = stories ? stories[0]?.blocks[0]?.video?.video_list?.V_EXP7 : null;
 
 		if (!video && !first_story_video) return (<></>);
+		const video_duration = video?.duration || first_story_video?.duration;
 		return (
-			<Duration>{ video?.duration || first_story_video?.duration }</Duration>			
+			<Duration>{ fromSecondsToTime(video_duration / 1000) }</Duration>			
 		);
 	};
 
