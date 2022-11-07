@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Styled from "styled-components";
 import { istatic } from "services";
+import { Frame_u8Props } from "types/components";
 
 
 const ViewPort = Styled.section`
@@ -32,7 +33,7 @@ const Img = Styled.img`
 `
 
 
-const Frame_u8 = ({ src, onSelect }) => {
+const Frame_u8:React.FC<Frame_u8Props> = ({ src, onSelect }) => {
 
 	return (
 		<ViewPort onClick={e => {if (onSelect) onSelect(src)}}>

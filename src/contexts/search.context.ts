@@ -22,13 +22,13 @@ export function useSearchContext(){
 
 	const router = useRouter();
 
-  const selectTypeAhead = (option: string): void => {
+  const selectTypeAhead = (option:string):void => {
     setInputData(option);
     setIsTyping(false);
     setTypeAhead([]);
   }
 
-  const filterSearch = async (value: string): Promise<void> => {
+  const filterSearch = async (value:string):Promise<void> => {
     if (value.length > 0 && isTyping) {
       setTypeAhead(await istatic.advancedtypeAhead(value).then(r => r.data));
     } else if (!value.length && isTyping) {

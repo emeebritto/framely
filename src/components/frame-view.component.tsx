@@ -2,6 +2,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { VideoPlayer } from "components";
 import Styled from "styled-components";
 import { Virtual } from "swiper";
+import { FrameStoryProps } from "types/components";
 import 'swiper/css/virtual';
 import React from "react";
 import 'swiper/css';
@@ -29,8 +30,8 @@ const Img = Styled.img`
   max-height: 60vh;
 `
 
-const FrameStory:React.FC = ({ frame }) => {
-	const pages = frame.story_pin_data.pages;
+const FrameStory:React.FC<FrameStoryProps> = ({ frame }) => {
+	const pages = frame?.story_pin_data?.pages || [];
 	return (
 		<ViewPort>
 		  <Swiper
@@ -59,13 +60,14 @@ const FrameStory:React.FC = ({ frame }) => {
 	);
 };
 
-const FrameVid:React.FC = ({ frame }) => {
+const FrameVid:React.FC<FrameStoryProps> = ({ frame }) => {
 	return (<></>);
 };
 
-const FrameView:React.FC = ({ frame }) => {
-	if (frame.story_pin_data_id) return <FrameStory frame={frame}/>;
-	if (frame.videos) return <FrameVid frame={frame}/>;
+const FrameView:React.FC<FrameStoryProps> = ({ frame }) => {
+	if (!frame) return (<></>);
+	if (frame?.story_pin_data_id) return <FrameStory frame={frame}/>;
+	if (frame?.videos) return <FrameVid frame={frame}/>;
 	return (
 		<Img
 			src={frame.images.orig.url}

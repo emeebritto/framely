@@ -71,8 +71,11 @@ const BtnSearch = Styled.button`
   }
 `
 
+const Image = Styled.img`
+`
 
-const SearchBar = () => {
+
+const SearchBar:React.FC = () => {
   const {
     inputData,
     setInputData,
@@ -110,7 +113,7 @@ const SearchBar = () => {
           { shallow: true }
         )
       }}>
-        <img src={istatic.iconUrl({ name: "search" })} alt="search icon"/>
+        <Image src={istatic.iconUrl({ name: "search" })} alt="search icon"/>
       </BtnSearch>
       <OptionsTypeAhead
         show={!!typeAhead.length}

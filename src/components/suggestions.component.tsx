@@ -30,7 +30,7 @@ const Suggestion = Styled.p`
 `
 
 
-const Suggestions = () => {
+const Suggestions:React.FC = () => {
 	const { setInputData, queriesSuggestions } = useSearchContext();
 	const router = useRouter();
 

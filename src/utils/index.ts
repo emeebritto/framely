@@ -1,11 +1,15 @@
-export const splitData = (data:any[]):any[] => {
+import { Frame, Frameslist } from "types/services";
+
+
+
+export const splitData = (data:Frame[]):Frameslist[] => {
   const medium = Math.floor(data.length / 2);
   const first_column = [...data].splice(0, medium);
   const second_column = [...data].splice(medium, medium * 2);
   return [first_column, second_column];
 };
 
-export const fromSecondsToTime = (secondsRaw:number): string => {
+export const fromSecondsToTime = (secondsRaw:number):string => {
   let sec_num = Number(secondsRaw.toFixed(0));
   let hours:number | string = Math.floor(sec_num / 3600);
   let minutes:number | string = Math.floor((sec_num - (hours * 3600)) / 60);

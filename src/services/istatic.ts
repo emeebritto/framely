@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { Frame } from "types/services";
+
 
 
 export interface DictionaryResponse {
@@ -15,7 +17,6 @@ export interface TranslateResponse {
     text:string;
   };
 }
-
 
 export interface RandomImageRequest {
   width:string | number;
@@ -81,27 +82,27 @@ class Istatic {
     return axios.get(`${this.baseUrl}/search/images?${queries}`);
   }
 
-  getImage(id:string):Promise<any> {
+  getImage(id:string):Promise<{data:Frame}> {
     return axios.get(`${this.baseUrl}/image/${id}`);
   }
 
-  getRelatedImage(id:string, bookmark?:string = ""):Promise<any> {
+  getRelatedImage(id:string, bookmark?:string=""):Promise<{data:RelatedFrames}> {
     return axios.get(`${this.baseUrl}/image/${id}/related?bookmark=${bookmark}`);
   }
 
-  advancedtypeAhead(query:string): Promise<any> {
+  advancedtypeAhead(query:string): Promise<{data:TypeAheadList}> {
     return axios.get(`${this.baseUrl}/search/advancedtypeAhead?query=${query}`);
   }
 
-  animatedSvgUrl({ name }:{ name:string }): string {
+  animatedSvgUrl({ name }:{ name:string }):string {
     return `${this.staticSourcesUrl}/icons/AnimatedSvg/${name}.svg`;
   }
 
-  staticPath(pathName:string): Promise<any> {
-    return axios.get(`${this.staticSourcesUrl}/${pathName}`);
+  staticPath(pathName:string):string {
+    return `${this.staticSourcesUrl}/${pathName}`;
   }
 
-  images_queries(q:{totalResult?:number}):Promise<any> {
+  images_queries(q:{totalResult?:number}):Promise<{data:string[]}> {
     return axios.get(`${this.baseUrl}/search/suggestions?totalResult=${q?.totalResult || ""}`);
   }
 

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { AppProps } from 'next/app';
 import Link from 'next/link';
 import Styled from 'styled-components';
+import { OptionsTypeAheadProps } from "types/components";
 
 
 const ViewPort = Styled.section`
@@ -42,11 +43,6 @@ const Option = Styled.a`
 	}
 `
 
-interface OptionsTypeAheadProps {
-	show?:boolean;
-	resource:Array<string>;
-	onSelect:(s: string) => void;
-}
 
 const OptionsTypeAhead: React.FC<OptionsTypeAheadProps> = ({
 	show=true,
@@ -61,7 +57,7 @@ const OptionsTypeAhead: React.FC<OptionsTypeAheadProps> = ({
 		<ViewPort show={show}>
 			{src.map((option, index) => {
 				return(
-					<Link href={`${router.route}?q=${option.query.replace(/\s/gi, '::')}`}>
+					<Link href={`${router.route}?q=${option.query.replace(/\s/gi, '::')}`} key={index}>
 						<Option onClick={(e) => {
 							e.stopPropagation();
 							onSelect(option.query);

@@ -23,7 +23,7 @@ const ViewPort = Styled.footer`
 `
 
 
-const Footer: React.FC = () => {
+const Footer:React.FC = () => {
 	return (
     <ViewPort>
       <a

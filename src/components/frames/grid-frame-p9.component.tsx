@@ -3,6 +3,7 @@ import Image from "next/image";
 import Styled from "styled-components";
 import { istatic } from "services";
 import { fromSecondsToTime } from "utils";
+import { Frame_p9Props, FrameDurationProps } from "types/components";
 
 
 const ViewPort = Styled.section`
@@ -80,15 +81,6 @@ const Img = Styled.img`
 	border-radius: 20px;
 `
 
-
-interface Frame_p9Props {
-	src:any;
-	onSelect?: ((s:any) => void);
-}
-
-interface FrameDurationProps {
-	frame:any;
-}
 
 const Frame_p9: React.FC<Frame_p9Props> = ({ src, onSelect }) => {
 	const FrameDuration: React.FC<FrameDurationProps> = ({ frame }) => {

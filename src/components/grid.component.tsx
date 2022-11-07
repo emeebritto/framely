@@ -1,6 +1,7 @@
 import React from "react";
 import Styled from "styled-components";
 import { GridFrame } from "components";
+import { GridProps } from  "types/components";
 
 
 const ViewPort = Styled.section`
@@ -18,7 +19,7 @@ const Columm = Styled.div`
 `
 
 
-const Grid = ({ source, FrameType, onSelect }) => {
+const Grid:React.FC<GridProps> = ({ source, onSelect }) => {
 	// // 2 % 3 == 0
 
 	return (

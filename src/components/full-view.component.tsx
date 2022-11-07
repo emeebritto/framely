@@ -1,5 +1,6 @@
 import React from "react";
 import Styled from "styled-components";
+import { FullViewProp } from "types/components";
 import { istatic } from "services";
 
 
@@ -24,6 +25,9 @@ const ImageWrapper = Styled.section`
 	}
 `
 
+const Image = Styled.img`
+`
+
 const CloseBtn = Styled.button`
 	position: absolute;
 	top: 4%;
@@ -36,13 +40,7 @@ const CloseBtn = Styled.button`
 	cursor: pointer;
 `
 
-
-interface FullViewProp {
-	src?:any | null;
-	onRequestClose?:((s?:any) => any);
-}
-
-const FullView: React.FC = ({ src, onRequestClose=(()=> ({}))}) => {
+const FullView: React.FC<FullViewProp> = ({ src, onRequestClose=(()=> ({}))}) => {
 
 	return (
 		<>
@@ -50,7 +48,7 @@ const FullView: React.FC = ({ src, onRequestClose=(()=> ({}))}) => {
 			<ViewPort onClick={onRequestClose}>
 				<CloseBtn/>
 				<ImageWrapper onClick={e => e.stopPropagation()}>
-					<img src={src.images.orig.url} alt={src.grid_title}/>
+					<Image src={src.images.orig.url} alt={src.grid_title}/>
 				</ImageWrapper>
 			</ViewPort>
 		}

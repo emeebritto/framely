@@ -31,7 +31,7 @@ const BrandingImg = Styled.img`
 
 
 
-const Header: React.FC = () => {
+const Header:React.FC = () => {
 	return (
     <ViewPort>
       <Link href="/">

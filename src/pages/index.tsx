@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from '../styles/Home.module.css';
 import { useSearchContext } from "contexts";
+import { Frameslist, Frame } from "types/services";
 import { useRouter } from 'next/router';
 import Styled from 'styled-components';
 import type { NextPage } from 'next';
@@ -113,13 +114,13 @@ const LoadNewZone = Styled.section`
 `
 
 
-const Home: NextPage = () => {
-  const [frames, setFrames] = useState([[], []]);
-  const [targetSrc, setTargetSrc] = useState(null);
+const Home:NextPage = () => {
+  const [frames, setFrames] = useState<Frameslist[]>([[], []]);
+  const [targetSrc, setTargetSrc] = useState<null|Frame>(null);
   const { setInputData } = useSearchContext();
   const [label, setLabel] = useState('');
   const [bookmark, setBookmark] = useState('');
-  const ref = useRef<HTMLDivElement | null>(null);
+  const ref = useRef<HTMLDivElement|null>(null);
   const router = useRouter();
 
   const load_images = ():void => {
@@ -142,8 +143,8 @@ const Home: NextPage = () => {
   const load_more_images = (query:string):void => {
     istatic.searchImage(query, { per_page: 23, bookmark }).then(r => {
       const splitedData = splitData(r.data.results);
-      setFrames(currentFrames => {
-        return currentFrames.map((col, idx) => {
+      setFrames((currentFrames:Frameslist[]):Frameslist[] => {
+        return currentFrames.map((col:Frame[], idx:number):Frame[] => {
           return [...col, ...splitedData[idx]];
         });
       });
@@ -166,7 +167,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     // The q changed!
-    let { q } = router.query;
+    let q:string|undefined = router.query?.q;
     if (q) {
       search_images(q);
       setInputData(q.replace(/::/g, " "));
@@ -189,7 +190,7 @@ const Home: NextPage = () => {
         <Grid
           source={frames}
           FrameType={GridFrame}
-          onSelect={src => router.push(`/frame/${src.id}`)}
+          onSelect={(src:Frame) => router.push(`/frame/${src.id}`)}
         />
         <LoadNewZone ref={ref}/>
         <Footer/>

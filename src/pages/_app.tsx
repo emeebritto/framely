@@ -12,7 +12,7 @@ const ViewPort = Styled.div`
 `
 
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }:AppProps) {
   return (
     <ViewPort>
       <Head>

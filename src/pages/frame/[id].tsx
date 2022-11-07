@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import type { NextPage, GetServerSideProps } from 'next';
+import { FramePageProps } from "types/pages";
 import { useRouter } from 'next/router';
 import Styled from 'styled-components';
+import { Frameslist, Frame as FrameType } from "types/services";
 import { istatic } from "services";
 import { splitData } from "utils";
 import cache from "memory-cache";
@@ -20,26 +22,6 @@ const ViewPort = Styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-`
-
-// const FrameView = Styled.img`
-//   min-height: 25vh;
-//   max-height: 60vh;
-// `
-
-const Alert = Styled.section`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #020309;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  cursor: pointer;
-  z-index: 97;
 `
 
 const Related = Styled.section`
@@ -74,19 +56,20 @@ const LoadNewZone = Styled.section`
 `
 
 
-const Frame: NextPage = ({ pagContent }) => {
+const Frame:NextPage<FramePageProps> = ({ pagContent }) => {
   console.log({pagContent});
-  const [relatedFrames, setRelatedFrames] = useState(pagContent.relatedFrames.result);
-  const [bookmark, setBookmark] = useState(pagContent.relatedFrames.bookmark);
-  const ref = useRef<HTMLDivElement | null>(null);
+
+  const [relatedFrames, setRelatedFrames] = useState<Frameslist[]>(pagContent.relatedFrames.result);
+  const [bookmark, setBookmark] = useState<string>(pagContent.relatedFrames.bookmark);
+  const ref = useRef<HTMLDivElement|null>(null);
   const router = useRouter();
 
 
-  const load_more_images = async(id:string) => {
+  const load_more_images = async(id:string):Promise<void> => {
     istatic.getRelatedImage(id, bookmark).then(r => {
       const splitedData = splitData(r.data.result);
-      setRelatedFrames(currentFrames => {
-        return currentFrames.map((col, idx) => {
+      setRelatedFrames((currentFrames:Frameslist[]):Frameslist[] => {
+        return currentFrames.map((col:FrameType[], idx:number):FrameType[] => {
           return [...col, ...splitedData[idx]];
         });
       });
@@ -112,20 +95,6 @@ const Frame: NextPage = ({ pagContent }) => {
   }, [pagContent]);
 
 
-  if (!pagContent) {
-    return (
-      <>
-      <Head>
-        <title>Framely - 404</title>
-      </Head>
-      <Alert>
-        Framely - Sorry, we don't found it (404)
-      </Alert>
-      </>
-    )
-  }
-
-
   return (
     <ViewPort>
       <Head>
@@ -140,6 +109,7 @@ const Frame: NextPage = ({ pagContent }) => {
             if (i >= 5) return false;
             return (
               <Ship
+                key={i}
                 onClick={() => {
                   router.push(`/?q=${rel.replace(/\s/gi, "::")}`);
                 }}
@@ -166,12 +136,12 @@ export default Frame;
 
 export const getServerSideProps: GetServerSideProps = async(context) => {
   let id = String(context?.params?.id || '');
-  let pagContent: any | null = null;
+  let pagContent:FrameType|null = null;
 
-  if (!id) return { props: { pagContent } };
+  if (!id) return { notFound:true };
 
-  const KEY = `image::${id}`;
-  const cachedResponse = cache.get(KEY);
+  const KEY = `frame::${id}`;
+  const cachedResponse:FrameType|null = cache.get(KEY) || null;
 
   if (cachedResponse) {
     pagContent = cachedResponse;
@@ -186,6 +156,8 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
       cache.put(KEY, pagContent, 60 * 60000); // one hour total
     }
   }
+
+  if(!pagContent) return { notFound:true };
 
   return {
     props: { pagContent }, // will be passed to the page component as props
