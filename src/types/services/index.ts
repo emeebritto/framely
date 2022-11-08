@@ -13,6 +13,7 @@ export interface User {
 	id:string;
 	first_name:string;
 	image_medium_url:string;
+	image_large_url:string;
 	follower_count:number;
 	domain_verified:boolean;
 	locale:string;
@@ -38,6 +39,11 @@ export interface VideoInfor {
 export interface DataBlock {
 	block_type:number;
 	type:string;
+	image: {
+		images: {
+			originals:ImageInfor;
+		};
+	};
 	video_signature:string;
 	block_style:any;
 	video: {
@@ -165,12 +171,17 @@ export interface Frame {
 	description:string;
 	link:string;
 	domain:string;
+	pin_join: {
+		visual_annotation:string[];
+	};
 	last_repin_date:string;
 	title:string;
 	grid_title:string;
 	story_pin_data:null|StoryData;
 	story_pin_data_id:string;
 	relatedFrames?:undefined|RelatedFrames;
+	videos:null|any;
+	frameType:string;
 	images: {
 		orig:ImageInfor;
 		"736x":ImageInfor;
@@ -178,12 +189,12 @@ export interface Frame {
 	};
 }
 
+export type Frameslist = Frame[];
 export interface RelatedFrames {
-	result:Frame[];
+	result:Frameslist[];
 	bookmark:string;
 };
 
-export type Frameslist = Frame[];
 
 export interface SearchResponse {
 	query:string;

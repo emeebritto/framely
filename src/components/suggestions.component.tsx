@@ -36,7 +36,7 @@ const Suggestions:React.FC = () => {
 
 	return (
 		<ViewPort>
-			{queriesSuggestions.map((option, i) => {
+			{queriesSuggestions.map((option:string, i:number) => {
 				return (
 					<Suggestion
 						onClick={e => {

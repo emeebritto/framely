@@ -39,12 +39,7 @@ const GridFrame:React.FC<GridFrameProps> = ({ type, src, onSelect }) => {
 	if (type == "Frame_p9") return <Frame_p9 onSelect={onSelect} src={src}/>
 	if (type == "Frame_u8") return <Frame_u8 onSelect={onSelect} src={src}/>
 
-	return (
-		<ViewPort>
-			<FadeOut/>
-			<Img src={src.url} alt="Ramdom Image"/>
-		</ViewPort>
-	);
+	return (<></>);
 }
 
 export default GridFrame;

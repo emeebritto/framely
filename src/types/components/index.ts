@@ -1,4 +1,5 @@
-import { Frame, Frameslist } from "types/services";
+import { Frame, Frameslist, TypeAhead } from "types/services";
+
 
 export interface FrameStoryProps {
 	frame:Frame;
@@ -11,18 +12,18 @@ export interface FullViewProp {
 
 export interface GridProps {
 	source:Frameslist[];
-	type:string;
 	onSelect:((f:any)=> void);
 }
 
 export interface GridFrameProps {
-	source:Frame;
+	type:string;
+	src:Frame;
 	onSelect:((f:Frame)=> void);
 }
 
 export interface OptionsTypeAheadProps {
 	show?:boolean;
-	resource:Array<string>;
+	resource:Array<TypeAhead>;
 	onSelect:((s:string)=> void);
 }
 

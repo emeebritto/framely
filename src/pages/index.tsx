@@ -131,7 +131,7 @@ const Home:NextPage = () => {
     });
   };
 
-  const search_images = async(query:string):void => {
+  const search_images = (query:string):void => {
     istatic.searchImage(query, { per_page: 23 }).then(r => {
       const splitedData = splitData(r.data.results);
       setFrames(splitedData);
@@ -157,7 +157,7 @@ const Home:NextPage = () => {
     if (!node) return
     const intersectionObserver = new IntersectionObserver(entries => {
       if (entries.some(entry => entry.isIntersecting)) {
-        let { q } = router.query;
+        let q:string = String(router.query?.q || "");
         if (q) load_more_images(q);
       }
     })
@@ -167,7 +167,7 @@ const Home:NextPage = () => {
 
   useEffect(() => {
     // The q changed!
-    let q:string|undefined = router.query?.q;
+    let q:string = String(router.query?.q || "");
     if (q) {
       search_images(q);
       setInputData(q.replace(/::/g, " "));
@@ -189,7 +189,6 @@ const Home:NextPage = () => {
         <Label>{ label }</Label>
         <Grid
           source={frames}
-          FrameType={GridFrame}
           onSelect={(src:Frame) => router.push(`/frame/${src.id}`)}
         />
         <LoadNewZone ref={ref}/>

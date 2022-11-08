@@ -1,3 +1,6 @@
+import { TypeAheadList } from "types/services";
+
+
 export interface SearchContextData {
 	inputData:string;
 	inputDebounce:string;

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Frame } from "types/services";
+import { Frame, TypeAheadList } from "types/services";
 
 
 
@@ -17,6 +17,13 @@ export interface TranslateResponse {
     text:string;
   };
 }
+
+export interface RelatedFramesResponse {
+  data: {
+    result:Frame[];
+    bookmark:string;
+  };
+};
 
 export interface RandomImageRequest {
   width:string | number;
@@ -36,6 +43,7 @@ class Istatic {
   private istaticPROD:string;
   public baseUrl:string;
   private staticSourcesUrl:string;
+  private random_counter:number;
   constructor() {
     this.devENV = process.env.NODE_ENV === 'development';
     this.istaticDEV = `http://192.168.0.109:${9872}`;
@@ -77,7 +85,10 @@ class Istatic {
     return axios.get(`${this.baseUrl}/random/image/list?${config}`);
   }
 
-  searchImage(query:string, cnf:{page?:string, per_page?:string, bookmark?:string}):Promise<any> {
+  searchImage(
+    query:string,
+    cnf:{page?:string, per_page?:string|number, bookmark?:string}
+  ):Promise<any> {
     const queries = `query=${query}&page=${cnf?.page || 1}&per_page=${cnf?.per_page || 2}&bookmark=${cnf?.bookmark || ''}`;
     return axios.get(`${this.baseUrl}/search/images?${queries}`);
   }
@@ -86,7 +97,7 @@ class Istatic {
     return axios.get(`${this.baseUrl}/image/${id}`);
   }
 
-  getRelatedImage(id:string, bookmark?:string=""):Promise<{data:RelatedFrames}> {
+  getRelatedImage(id:string, bookmark:string=""):Promise<RelatedFramesResponse> {
     return axios.get(`${this.baseUrl}/image/${id}/related?bookmark=${bookmark}`);
   }
 
