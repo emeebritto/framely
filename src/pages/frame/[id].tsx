@@ -4,7 +4,7 @@ import { FramePageProps } from "types/pages";
 import { useRouter } from 'next/router';
 import Styled from 'styled-components';
 import { Frameslist, Frame as FrameType } from "types/services";
-import { istatic } from "services";
+import { framelyApi } from "services";
 import { splitData } from "utils";
 import cache from "memory-cache";
 import Head from 'next/head';
@@ -66,7 +66,7 @@ const Frame:NextPage<FramePageProps> = ({ pagContent }) => {
 
 
   const load_more_images = async(id:string):Promise<void> => {
-    istatic.getRelatedImage(id, bookmark).then(r => {
+    framelyApi.getRelatedImage(id, bookmark).then(r => {
       const splitedData = splitData(r.data.result);
       setRelatedFrames((currentFrames:Frameslist[]):Frameslist[] => {
         return currentFrames.map((col:FrameType[], idx:number):FrameType[] => {
@@ -146,9 +146,9 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
   if (cachedResponse) {
     pagContent = cachedResponse;
   } else {
-    pagContent = await istatic.getImage(id).then(r => r.data).catch(err => null);
+    pagContent = await framelyApi.getImage(id).then(r => r.data).catch(err => null);
     if (pagContent) {
-      pagContent.relatedFrames = await istatic.getRelatedImage(pagContent.id)
+      pagContent.relatedFrames = await framelyApi.getRelatedImage(pagContent.id)
         .then(r => ({
           result: splitData(r.data.result),
           bookmark: r.data.bookmark

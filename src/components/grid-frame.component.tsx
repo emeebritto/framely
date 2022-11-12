@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import Styled from "styled-components";
-import { istatic } from "services";
 import { GridFrameProps } from "types/components";
 import { Frame_p9, Frame_u8 } from "./frames";
 

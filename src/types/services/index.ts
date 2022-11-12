@@ -180,6 +180,7 @@ export interface Frame {
 	story_pin_data:null|StoryData;
 	story_pin_data_id:string;
 	relatedFrames?:undefined|RelatedFrames;
+	premium?:boolean;
 	videos:null|any;
 	frameType:string;
 	images: {
