@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { SearchContext } from './providers';
 import { useRouter } from 'next/router';
-import { istatic } from "services";
+import { framelyApi } from "services";
 
 
 export function useSearchContext(){
@@ -30,7 +30,7 @@ export function useSearchContext(){
 
   const filterSearch = async (value:string):Promise<void> => {
     if (value.length > 0 && isTyping) {
-      setTypeAhead(await istatic.advancedtypeAhead(value).then(r => r.data));
+      setTypeAhead(await framelyApi.advancedtypeAhead(value).then(r => r.data));
     } else if (!value.length && isTyping) {
     	router.push('/');
     } else {
@@ -39,7 +39,7 @@ export function useSearchContext(){
   }
 
   useEffect(() => {
-  	istatic.images_queries({ totalResult: 8 }).then(r => {
+  	framelyApi.images_queries({ totalResult: 8 }).then(r => {
   		setQueriesSuggestions(r.data);
   	});
   }, []);
