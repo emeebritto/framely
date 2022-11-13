@@ -181,6 +181,7 @@ export interface Frame {
 	story_pin_data_id:string;
 	relatedFrames?:undefined|RelatedFrames;
 	premium?:boolean;
+	url?:string;
 	videos:null|any;
 	frameType:string;
 	images: {

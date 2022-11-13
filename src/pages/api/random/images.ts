@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import cache from "memory-cache";
+import { thirtyMinutes } from "consts";
 import axios from "axios";
-// import { TypeAhead } from "types/services";
 
 interface Exception {
   msg:string;
@@ -12,6 +13,13 @@ export default async function handler(
 ) {
   const per_page = req.query?.per_page || 15;
   const page = req.query?.page || 1;
+
+  const KEY = `ramdom::images::${page}::${per_page}`;
+
+  const cachedResponse = cache.get(KEY);
+  if (cachedResponse) {
+    return res.status(200).json(cachedResponse);
+  }
 
   const data = await axios({
     url: `${process.env.BASE_URL_RIMG}/v2/list?page=${page}&limit=${per_page}`,
@@ -26,5 +34,6 @@ export default async function handler(
     data[i]["url"] = data[i]["download_url"];
   }
 
+  cache.put(KEY, data, thirtyMinutes);
   res.json(data);
 }

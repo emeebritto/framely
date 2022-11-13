@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import axios from "axios";
 import { TypeAhead } from "types/services";
+import { oneMinute } from "consts";
+import cache from "memory-cache";
+import axios from "axios";
 
 interface Exception {
   msg:string;
@@ -10,11 +12,18 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<TypeAhead[]|Exception>
 ) {
-  const query = req.query?.query;
+  const query = String(req.query?.query || "");
 
   if (!query) {
     res.status(404);
     res.json({ msg: "query is required" });
+  }
+
+  const KEY = `query::${query.toLowerCase().trim()}`;
+
+  const cachedResponse = cache.get(KEY);
+  if (cachedResponse) {
+    return res.status(200).json(cachedResponse);
   }
 
   const url = process.env.BASE_URL_PTYPEAHEAD_RESOURCE;
@@ -54,5 +63,6 @@ export default async function handler(
 
   if (!ahead) return res.json({ msg: "request failed" });
   const result = ahead.filter((frame:TypeAhead) => frame.type == "query");
+  cache.put(KEY, result, oneMinute);
   res.json(result);
 }

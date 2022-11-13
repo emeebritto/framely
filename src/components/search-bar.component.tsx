@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Styled from 'styled-components';
-import { istatic } from "services";
 import { useSearchContext } from "contexts";
 import { OptionsTypeAhead } from "components";
 // import Image from 'next/image';
@@ -113,7 +112,7 @@ const SearchBar:React.FC = () => {
           { shallow: true }
         )
       }}>
-        <Image src={istatic.iconUrl({ name: "search" })} alt="search icon"/>
+        <Image src="/icons/search_white_24dp.svg" alt="search icon"/>
       </BtnSearch>
       <OptionsTypeAhead
         show={!!typeAhead.length}

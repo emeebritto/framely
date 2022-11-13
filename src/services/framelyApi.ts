@@ -30,7 +30,7 @@ class FramelyApi {
   private random_counter:number;
   constructor() {
     this.devENV = process.env.NODE_ENV === 'development';
-    this.fapiDEV = `http://localhost:${3001}/api`;
+    this.fapiDEV = `http://localhost:${3000}/api`;
     this.fapiPROD = 'https://framely.vercel.app/api';
     this.baseUrl = this.devENV ? this.fapiDEV : this.fapiPROD;
     this.staticSourcesUrl = `${this.baseUrl}/static`;

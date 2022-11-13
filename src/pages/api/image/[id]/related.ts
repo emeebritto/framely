@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import axios from "axios";
 import { RelatedFrames, Frame } from "types/services";
+import cache from "memory-cache";
+import { twoHour } from "consts";
+import axios from "axios";
 
 interface Exception {
   msg:string;
@@ -41,7 +43,14 @@ export default async function handler(
   const imageId = String(req.query?.id || "");
   const bookmark = String(req.query?.bookmark || "");
 
+  const KEY = `related::${imageId}::${bookmark}`;
   if (!imageId) return res.status(404).json({ msg: "imageId is required" });
+
+  const cachedResponse = cache.get(KEY);
+  if (cachedResponse) {
+    return res.status(200).json(cachedResponse);
+  }
+
   const apiUrl = process.env.BASE_URL_PREL_IMG;
   const query = `?source_url=/pin/${imageId}/?mt=login`;
   const config = bookmark
@@ -62,8 +71,11 @@ export default async function handler(
     return frame;
   }).filter((frame:Frame) => frame.type == "pin");
 
-  res.json({
+  const result = {
     result: frames,
     bookmark: data.resource_response.bookmark
-  })
+  }
+
+  cache.put(KEY, result, twoHour);
+  res.json(result)
 }

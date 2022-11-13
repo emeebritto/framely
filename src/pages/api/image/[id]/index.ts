@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
+import cache from "memory-cache";
 import { Frame } from "types/services";
+import { twoHour } from "consts";
 
 interface Exception {
   msg:string;
@@ -11,8 +13,16 @@ export default async function handler(
   res: NextApiResponse<Frame|Exception>
 ) {
   const imageId:string = String(req.query?.id || "");
-  const jsonDataPattern = /<script id=\"__PWS_DATA__\" type=\"application\/json\">(.+)<\/script><link data-chunk="DesktopUnauthPageWrapper"/g;
+
+  const KEY = `image::${imageId}`;
   if (!imageId) return res.status(404).json({ msg: "imageId is required" });
+
+  const cachedResponse = cache.get(KEY);
+  if (cachedResponse) {
+    return res.status(200).json(cachedResponse);
+  }
+
+  const jsonDataPattern = /<script id=\"__PWS_DATA__\" type=\"application\/json\">(.+)<\/script><link data-chunk="DesktopUnauthPageWrapper"/g;
   const data = await axios({
     url: `https://${process.env.BASE_URL_PRESOURCE_TARGET}/pin/${imageId}/?mt=login`,
     method: "GET"
@@ -21,9 +31,9 @@ export default async function handler(
   try {
     const matches = String(data).matchAll(jsonDataPattern);
     const match = matches.next();
-    // console.log([...matches][0][1]);
     const dataObject = JSON.parse(match.value[1]);
     const imageData = dataObject.props.initialReduxState.pins[imageId];
+    cache.put(KEY, imageData, twoHour);
     res.json(imageData);
   } catch(err) {
     console.log(err);

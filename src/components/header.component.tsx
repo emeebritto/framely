@@ -1,5 +1,4 @@
 import Styled from 'styled-components';
-import { istatic } from "services";
 import Link from 'next/link';
 import React from 'react';
 
@@ -37,7 +36,7 @@ const Header:React.FC = () => {
       <Link href="/">
         <Branding>
           <BrandingImg
-            src={istatic.imgUrl({ path: "branding/Framely.png" })}
+            src="/framely_branding.png"
             alt="Framely Branding"
           />
         </Branding>

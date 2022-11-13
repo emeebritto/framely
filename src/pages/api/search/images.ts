@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import axios from "axios";
 import { SearchResponse, Frame } from "types/services";
+import cache from "memory-cache";
+import { twoHour } from "consts";
+import axios from "axios";
 
 interface Exception {
   msg:string;
@@ -155,7 +157,8 @@ export default async function handler(
     res.json({ msg: "query is required" });
   }
 
-  const query = query_raw.replace(/::/gi, ' ');
+
+  const query = query_raw.replace(/(::)+|(\s)+/gi, ' ').toLowerCase().trim();
   const per_page = parseInt(String(req.query?.per_page || 23));
   const bookmark = String(req.query?.bookmark || "");
   const page = parseInt(String(req.query?.page || 1));
@@ -166,13 +169,32 @@ export default async function handler(
     });
   }
 
+  const PKEY = `query::${query}::${bookmark}`;
+  const UKEY = `query::${query}::${per_page}::${page}`;
+  let pdata = {
+    data: [] as Frame[],
+    bookmark: ""
+  };
 
-  let pdata = bookmark
-    ? await load_more_pins({ query, bookmark })
-    : await getPinterestImgs({ query })
+  const cachedResponse = cache.get(PKEY);
+  if (cachedResponse) {
+    pdata = cachedResponse;
+  } else {
+    pdata = bookmark
+      ? await load_more_pins({ query, bookmark })
+      : await getPinterestImgs({ query })
+
+    pdata.data = pdata.data.map((frame:Frame) => {
+      frame.frameType = "Frame_p9";
+      return frame;
+    });
+
+    pdata.data = pdata.data.filter((frame:Frame) => frame.type == "pin");
+    cache.put(PKEY, pdata, twoHour);
+  }
 
 
-  const per_page_mid = per_page - pdata.data.length;
+  const per_page_mid = per_page - pdata.data.length;  
 
   let udata = await getUnsplashImgs({
     query: query,
@@ -181,12 +203,6 @@ export default async function handler(
   });
 
 
-  pdata.data = pdata.data.map((frame:Frame) => {
-    frame.frameType = "Frame_p9";
-    return frame;
-  });
-
-  pdata.data = pdata.data.filter((frame:Frame) => frame.type == "pin");
 
   udata = udata.map((frame:Frame) => {
     frame.frameType = "Frame_u8";
