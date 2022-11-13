@@ -2,11 +2,13 @@ import { Frame, Frameslist } from "types/services";
 
 
 
-export const splitData = (data:Frame[]):Frameslist[] => {
-  const medium = Math.floor(data.length / 2);
-  const first_column = [...data].splice(0, medium);
-  const second_column = [...data].splice(medium, medium * 2);
-  return [first_column, second_column];
+export const splitData = (data:Frame[], num:number=2):Frameslist[] => {
+  const cols = [];
+  const medium = Math.floor(data.length / num);
+  for (let i=0; i < num; i++) {
+    cols.push([...data].splice(medium * i, medium * (i+1)))
+  }
+  return cols;
 };
 
 export const fromSecondsToTime = (secondsRaw:number):string => {

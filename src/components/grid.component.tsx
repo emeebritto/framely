@@ -14,8 +14,10 @@ const ViewPort = Styled.section`
 const Columm = Styled.div`
 	display: flex;
 	flex-direction: column;
-	margin: ${(props:{margin?:string}) => (props.margin)};
-	width: 48%;
+	${(props:{margin?:string, numCol?:number}) => (`
+		margin: ${props.margin};
+		width: ${(100 / (props.numCol || 2)) - 2}%;
+	`)}
 `
 
 
@@ -26,7 +28,7 @@ const Grid:React.FC<GridProps> = ({ source, onSelect }) => {
 		<ViewPort>
 			{source.map((col_src, idx) => {
 				return (
-						<Columm margin="25px 6px" key={`col-${idx}`}>
+						<Columm numCol={source.length} margin="25px 6px" key={`col-${idx}`}>
 							{col_src.map((frame, i) => {
 								return (
 									<GridFrame

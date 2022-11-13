@@ -113,9 +113,25 @@ const LoadNewZone = Styled.section`
   height: 40px;
 `
 
+const ColControl = Styled.section`
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+`
+
+const Input = Styled.input`
+  display: block;
+  margin: 0 20px;
+`
+
+const NumColVal = Styled.p`
+  font-size: 1em;
+`
+
 
 const Home:NextPage = () => {
   const [frames, setFrames] = useState<Frameslist[]>([[], []]);
+  const [numCol, setNumCol] = useState(2);
   const [targetSrc, setTargetSrc] = useState<null|Frame>(null);
   const { setInputData } = useSearchContext();
   const [label, setLabel] = useState('');
@@ -125,7 +141,7 @@ const Home:NextPage = () => {
 
   const load_images = ():void => {
     framelyApi.listRandomImage({ per_page: 8 }).then(r => {
-      const splitedData = splitData(r.data);
+      const splitedData = splitData(r.data, numCol);
       setFrames(splitedData);
       setLabel("Quick Picks");
     });
@@ -133,7 +149,7 @@ const Home:NextPage = () => {
 
   const search_images = (query:string):void => {
     framelyApi.searchImage(query, { per_page: 23 }).then(r => {
-      const splitedData = splitData(r.data.results);
+      const splitedData = splitData(r.data.results, numCol);
       setFrames(splitedData);
       setBookmark(r.data.bookmark);
       setLabel(r.data.query);
@@ -142,7 +158,7 @@ const Home:NextPage = () => {
 
   const load_more_images = (query:string):void => {
     framelyApi.searchImage(query, { per_page: 23, bookmark }).then(r => {
-      const splitedData = splitData(r.data.results);
+      const splitedData = splitData(r.data.results, numCol);
       setFrames((currentFrames:Frameslist[]):Frameslist[] => {
         return currentFrames.map((col:Frame[], idx:number):Frame[] => {
           return [...col, ...splitedData[idx]];
@@ -163,7 +179,7 @@ const Home:NextPage = () => {
     })
     intersectionObserver.observe(node);
     return () => intersectionObserver.disconnect();
-  }, [router.query.q, bookmark]);
+  }, [router.query.q, bookmark, numCol]);
 
   useEffect(() => {
     // The q changed!
@@ -175,7 +191,7 @@ const Home:NextPage = () => {
       load_images();
       setInputData("");
     }
-  }, [router.query.q]);
+  }, [router.query.q, numCol]);
 
 
   return (
@@ -187,6 +203,17 @@ const Home:NextPage = () => {
     <ViewPort>
       <Content>
         <Label>{ label }</Label>
+        <ColControl>
+          <Input
+            type="range" min={1} max={5} step={1}
+            value={numCol}
+            onChange={e => {
+              let target = e.target as HTMLInputElement;
+              setNumCol(parseInt(target.value));
+            }}
+          />
+          <NumColVal>{ numCol }</NumColVal>
+        </ColControl>
         <Grid
           source={frames}
           onSelect={(src:Frame) => router.push(`/frame/${src.id}`)}
