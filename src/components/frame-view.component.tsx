@@ -1,5 +1,5 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { VideoPlayer } from "components";
+import { SlideVideoPlayer, VideoPlayer } from "components";
 import Styled from "styled-components";
 import { Virtual } from "swiper";
 import { FrameStoryProps } from "types/components";
@@ -30,6 +30,7 @@ const Img = Styled.img`
   max-height: 60vh;
 `
 
+
 const FrameStory:React.FC<FrameStoryProps> = ({ frame }) => {
 	const pages = frame?.story_pin_data?.pages || [];
 	return (
@@ -50,7 +51,7 @@ const FrameStory:React.FC<FrameStoryProps> = ({ frame }) => {
 	          >
 	          	<ViewWrapper>
 		            {!vid && <Img src={block.image.images.originals.url} alt="thumbnail"/>}
-		            {vid && <VideoPlayer url={vid.url}/>}
+		            {vid && <SlideVideoPlayer url={vid.url}/>}
 	          	</ViewWrapper>
 	          </SwiperSlide>
 	        );
@@ -61,7 +62,11 @@ const FrameStory:React.FC<FrameStoryProps> = ({ frame }) => {
 };
 
 const FrameVid:React.FC<FrameStoryProps> = ({ frame }) => {
+	const video = frame?.videos?.video_list?.V_720P;
+	console.log({ url: video?.url });
 	return (<></>);
+	// if (!video) return (<></>);
+	// return <VideoPlayer playing={true} url={video?.url}/>;
 };
 
 const FrameView:React.FC<FrameStoryProps> = ({ frame }) => {
