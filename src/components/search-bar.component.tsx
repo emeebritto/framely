@@ -107,7 +107,7 @@ const SearchBar:React.FC = () => {
       />
       <BtnSearch onClick={e=> {
         router.push(
-          `${router.route}/?q=${inputData}`,
+          `${router.route}?q=${inputData}`,
           undefined,
           { shallow: true }
         )

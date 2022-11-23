@@ -64,15 +64,15 @@ const FrameStory:React.FC<FrameStoryProps> = ({ frame }) => {
 const FrameVid:React.FC<FrameStoryProps> = ({ frame }) => {
 	const video = frame?.videos?.video_list?.V_720P;
 	console.log({ url: video?.url });
-	return (<></>);
-	// if (!video) return (<></>);
-	// return <VideoPlayer playing={true} url={video?.url}/>;
+	// return (<></>);
+	if (!video) return (<></>);
+	return <VideoPlayer playing={true} url={video?.url}/>;
 };
 
 const FrameView:React.FC<FrameStoryProps> = ({ frame }) => {
 	if (!frame) return (<></>);
-	if (frame?.story_pin_data_id) return <FrameStory frame={frame}/>;
 	if (frame?.videos) return <FrameVid frame={frame}/>;
+	if (frame?.story_pin_data_id) return <FrameStory frame={frame}/>;
 	return (
 		<Img
 			src={frame.images.orig.url}

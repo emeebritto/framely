@@ -29,6 +29,11 @@ export interface OptionsTypeAheadProps {
 
 export interface VideoPlayerProps {
 	url:string;
+	playing:boolean;
+}
+
+export interface SlideVideoPlayerProps {
+	url:string;
 }
 
 export interface Frame_p9Props {

@@ -2,7 +2,7 @@ import { useSwiperSlide, useSwiper } from 'swiper/react';
 import React, { useState, useEffect } from "react";
 import Styled from "styled-components";
 import ReactPlayer from 'react-player';
-import { VideoPlayerProps } from "types/components";
+import { SlideVideoPlayerProps } from "types/components";
 import { VideoPlayer } from "components";
 
 
@@ -19,7 +19,7 @@ const Player = Styled(ReactPlayer)`
   left: 0;
 `
 
-const SlideVideoPlayer:React.FC<VideoPlayerProps> = ({ url }) => {
+const SlideVideoPlayer:React.FC<SlideVideoPlayerProps> = ({ url }) => {
   const swiperSlide = useSwiperSlide();
   const [playing, setPlaying] = useState(false);
   useEffect(()=> {

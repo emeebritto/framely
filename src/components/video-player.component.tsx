@@ -22,7 +22,7 @@ const VideoPlayer:React.FC<VideoPlayerProps> = ({ playing=false, url }) => {
 		<PlayerWrapper>
 			<Player
         playing={playing}
-        url={url}
+        url={url.replace("https", "http")}
         width='100%'
         height='100%'
         config={{

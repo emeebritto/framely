@@ -57,12 +57,10 @@ const LoadNewZone = Styled.section`
 
 
 const Frame:NextPage<FramePageProps> = ({ pagContent }) => {
-  const [relatedFrames, setRelatedFrames] = useState<Frameslist[]|[]>(pagContent?.relatedFrames?.result || []);
-  const [bookmark, setBookmark] = useState<string>(pagContent?.relatedFrames?.bookmark || "");
+  const [relatedFrames, setRelatedFrames] = useState<Frameslist[]|[]>([]);
+  const [bookmark, setBookmark] = useState<string>("");
   const ref = useRef<HTMLDivElement|null>(null);
   const router = useRouter();
-
-  console.log("RENDER");
 
   const load_more_images = async(id:string):Promise<void> => {
     framelyApi.getRelatedImage(id, bookmark).then(r => {
