@@ -22,3 +22,12 @@ export const fromSecondsToTime = (secondsRaw:number):string => {
   if (seconds < 10) {seconds = "0" + seconds;}
   return `${(hours ? (hours + ':') : '') + minutes + ':' + seconds}`;
 }
+
+export const onlyValues = (obj:any):any[] => {
+  const list = []
+  for (const [key, value] of Object.entries(obj)) {
+    if (!value) continue;
+    list.push(value);
+  }
+  return list;
+}
