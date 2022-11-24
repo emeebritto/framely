@@ -70,15 +70,15 @@ class FramelyApi {
     cnf:{page?:string, per_page?:string|number, bookmark?:string}
   ):Promise<any> {
     const queries = `query=${query}&page=${cnf?.page || 1}&per_page=${cnf?.per_page || 2}&bookmark=${cnf?.bookmark || ''}`;
-    return axios.get(`${this.baseUrl}/search/images?${queries}`);
+    return axios.get(`${this.baseUrl}/search/frames?${queries}`);
   }
 
   getImage(id:string):Promise<{data:Frame}> {
-    return axios.get(`${this.baseUrl}/image/${id}`);
+    return axios.get(`${this.baseUrl}/frame/${id}`);
   }
 
   getRelatedImage(id:string, bookmark:string=""):Promise<RelatedFramesResponse> {
-    return axios.get(`${this.baseUrl}/image/${id}/related?bookmark=${bookmark}`);
+    return axios.get(`${this.baseUrl}/frame/${id}/related?bookmark=${bookmark}`);
   }
 
   advancedtypeAhead(query:string): Promise<{data:TypeAheadList}> {
