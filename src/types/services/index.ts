@@ -147,6 +147,7 @@ export interface BoardDataResult {
 	metadata?:BoardMetaData;
 	frames:Frame[];
 	bookmark:string;
+	next?:string;
 }
 
 

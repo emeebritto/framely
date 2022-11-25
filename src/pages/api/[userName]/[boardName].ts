@@ -75,10 +75,12 @@ const load_board = async(
   const matches = String(data).matchAll(jsonDataPattern);
   const match = matches.next();
   const dataObject = JSON.parse(match.value[1]);
+  const bookmark:string = onlyValues(dataObject.props.initialReduxState.resources.BoardFeedResource)[0]["nextBookmark"];
   const boardData:BoardDataResult = {
     metadata: onlyValues(dataObject.props.initialReduxState.boards)[0],
     frames: arrangeFrameVideo(onlyValues(dataObject.props.initialReduxState.pins)),
-    bookmark: onlyValues(dataObject.props.initialReduxState.resources.BoardFeedResource)[0]["nextBookmark"]
+    bookmark: bookmark,
+    next: `https://framely.vercel.app/api/${userName}/${boardName}?bookmark=${bookmark}`
   };
   cache.put(BOARD_KEY, boardData, twoHour);
   return boardData;
