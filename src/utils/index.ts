@@ -1,4 +1,4 @@
-import { Frame, Frameslist } from "types/services";
+import { Frame, Frameslist, VideoInfor } from "types/services";
 
 
 
@@ -30,4 +30,22 @@ export const onlyValues = (obj:any):any[] => {
     list.push(value);
   }
   return list;
+}
+
+export const hlsV4to720p = (url:string):string => {
+  url = url.replace("/hls/", "/720p/");
+  url = url.replace(".m3u8", ".mp4");
+  return url;
+}
+
+export const arrangeFrameVideo = (frames:Frame[]):Frame[] => {
+  return frames.map((frame:Frame, idx:number):Frame => {
+    let frameVideo:VideoInfor|null = frame?.videos?.video_list?.V_HLSV4 || null;
+    if (frameVideo) {
+      frameVideo.url = hlsV4to720p(frameVideo.url);
+      delete frame.videos;
+    }
+    frame["video"] = frameVideo;
+    return frame;
+  })
 }

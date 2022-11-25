@@ -32,8 +32,8 @@ export interface VideoInfor {
 	duration:number;
 	url:string;
 	thumbnail:string;
-	captions_urls:any;
-	best_captions_url:string;
+	captions_urls?:any;
+	best_captions_url?:string;
 }
 
 export interface DataBlock {
@@ -133,6 +133,23 @@ export interface StoryData {
 }
 
 
+export interface BoardMetaData {
+	id:string;
+	url:string;
+	type:string;
+	name:string;
+	description:string;
+	board_order_modified_at:string;
+}
+
+
+export interface BoardDataResult {
+	metadata?:BoardMetaData;
+	frames:Frame[];
+	bookmark:string;
+}
+
+
 export interface Frame {
 	closeup_description:string;
 	is_playable:boolean;
@@ -183,6 +200,7 @@ export interface Frame {
 	premium?:boolean;
 	url?:string;
 	videos:null|any;
+	video:null|VideoInfor;
 	frameType:string;
 	images: {
 		orig:ImageInfor;
