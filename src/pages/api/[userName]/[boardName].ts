@@ -1,9 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import axios from "axios";
-import cache from "memory-cache";
 import { Frame, RelatedFrames, BoardDataResult, BoardMetaData } from "types/services";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { onlyValues, arrangeFrameVideo } from "utils";
 import { twoHour } from "consts";
+import cache from "memory-cache";
+import axios from "axios";
 
 interface Exception {
   msg:string;
@@ -49,10 +49,8 @@ const load_more_frames = async(
   if (!data) throw new Error("data request failed!");
   let frames:Frame[] = data.resource_response.data;
 
-  frames = arrangeFrameVideo(frames);
-
   const boardFrames:BoardDataResult = {
-    frames: frames,
+    frames: arrangeFrameVideo(frames),
     bookmark: data.resource_response.bookmark
   };
 
