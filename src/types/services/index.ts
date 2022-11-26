@@ -139,19 +139,22 @@ export interface BoardMetaData {
 	type:string;
 	name:string;
 	description:string;
+	pin_count:number;
 	board_order_modified_at:string;
 }
 
 
 export interface BoardDataResult {
 	metadata?:BoardMetaData;
-	frames:Frame[];
+	frames:any[]|[];
 	bookmark:string;
-	next?:string;
+	frames_count?:number;
+	next?:string|null;
 }
 
 
 export interface Frame {
+	[s:string]:any;
 	closeup_description:string;
 	is_playable:boolean;
 	share_count:number;

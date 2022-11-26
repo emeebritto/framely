@@ -12,10 +12,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Frame|Exception>
 ) {
-  const imageId:string = String(req.query?.id || "");
+  const frameId:string = String(req.query?.id || "");
 
-  const KEY = `image::${imageId}`;
-  if (!imageId) return res.status(404).json({ msg: "imageId is required" });
+  const KEY = `frame::${frameId}`;
+  if (!frameId) return res.status(404).json({ msg: "id is required" });
 
   const cachedResponse = cache.get(KEY);
   if (cachedResponse) {
@@ -24,7 +24,7 @@ export default async function handler(
 
   const jsonDataPattern = /<script id=\"__PWS_DATA__\" type=\"application\/json\">(.+)<\/script><link data-chunk="DesktopUnauthPageWrapper"/g;
   const data = await axios({
-    url: `https://${process.env.BASE_URL_PRESOURCE_TARGET}/pin/${imageId}/?mt=login`,
+    url: `https://${process.env.BASE_URL_PRESOURCE_TARGET}/pin/${frameId}/?mt=login`,
     method: "GET"
   }).then(r => r.data).catch(e => console.log(e));
 
@@ -32,9 +32,9 @@ export default async function handler(
     const matches = String(data).matchAll(jsonDataPattern);
     const match = matches.next();
     const dataObject = JSON.parse(match.value[1]);
-    const imageData = dataObject.props.initialReduxState.pins[imageId];
-    cache.put(KEY, imageData, twoHour);
-    res.json(imageData);
+    const frameData = dataObject.props.initialReduxState.pins[frameId];
+    cache.put(KEY, frameData, twoHour);
+    res.json(frameData);
   } catch(err) {
     console.log(err);
     res.status(501).json({ msg: "something is wrong (internal error)" });

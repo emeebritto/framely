@@ -137,7 +137,7 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
 
   if (!id) return { notFound:true };
 
-  const KEY = `frame::${id}`;
+  const KEY = `page::frame::${id}`;
   const cachedResponse:FrameType|null = cache.get(KEY) || null;
 
   if (cachedResponse) {

@@ -79,11 +79,33 @@ const load_board = async(
   const boardData:BoardDataResult = {
     metadata: onlyValues(dataObject.props.initialReduxState.boards)[0],
     frames: arrangeFrameVideo(onlyValues(dataObject.props.initialReduxState.pins)),
-    bookmark: bookmark,
-    next: `https://framely.vercel.app/api/${userName}/${boardName}?bookmark=${bookmark}`
+    bookmark: bookmark
   };
   cache.put(BOARD_KEY, boardData, twoHour);
   return boardData;
+};
+
+
+const load_data = async(
+  userName:string,
+  boardName:string,
+  bookmark:string
+):Promise<BoardDataResult> => {
+  const BOARD_KEY = `board::${userName}::${boardName}`;
+  const BOOKMARK_KEY = `board::${userName}::${boardName}::${bookmark}`;
+  const cachedBoard = cache.get(BOARD_KEY);
+  const cachedBoardFrames = cache.get(BOOKMARK_KEY);
+  const boardData:BoardDataResult = cachedBoard || await load_board(userName, boardName, BOARD_KEY);
+  if (bookmark && boardData.metadata) {
+    const boardFrames:BoardDataResult = cachedBoardFrames || await load_more_frames(boardData.metadata, bookmark, BOOKMARK_KEY);
+    return {...boardFrames};
+  }
+  return {...boardData};
+};
+
+
+const extractProperty = (prop:string, frames:Frame[]):any[] => {
+  return frames.map(frame => frame[prop]).filter(frame => !!frame);
 };
 
 
@@ -94,20 +116,22 @@ export default async function handler(
   const userName:string = String(req.query?.userName || "");
   const boardName:string = String(req.query?.boardName || "");
   const bookmark:string = String(req.query?.bookmark || "");
+  const only:string = String(req.query?.only || "");
+  const noMetadata:boolean = Boolean(req.query?.noMetadata);
 
-  const BOARD_KEY = `board::${userName}::${boardName}`;
-  const BOOKMARK_KEY = `board::${userName}::${boardName}::${bookmark}`;
-
-  const cachedBoard = cache.get(BOARD_KEY);
-  const cachedBoardFrames = cache.get(BOOKMARK_KEY);
 
   try {
-    const boardData:BoardDataResult = cachedBoard || await load_board(userName, boardName, BOARD_KEY);
-    if (bookmark && boardData.metadata) {
-      const boardFrames:BoardDataResult = cachedBoardFrames || await load_more_frames(boardData.metadata, bookmark, BOOKMARK_KEY);
-      return res.json(boardFrames);
-    }
-    res.json(boardData);
+    const boardData:BoardDataResult = await load_data(userName, boardName, bookmark);
+    const target:any[]|[] = only ? extractProperty(only, boardData.frames) : [];
+    const frames_count = boardData?.metadata?.pin_count || 0;
+    const nextLink = `https://framely.vercel.app/api/${userName}/${boardName}?bookmark=${boardData?.bookmark}`;
+    if (noMetadata) delete boardData.metadata;
+    res.json({
+      ...boardData,
+      frames_count,
+      frames: target || boardData.frames,
+      next: boardData.bookmark ? nextLink : null
+    });
   } catch(err) {
     console.log(err);
     res.status(501).json({ msg: "something is wrong (internal error)" });
