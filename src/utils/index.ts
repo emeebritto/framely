@@ -1,5 +1,8 @@
 import { Frame, Frameslist, VideoInfor } from "types/services";
 
+export interface Obj {
+  [key:string]:any;
+}
 
 
 export const splitData = (data:Frame[], num:number=2):Frameslist[] => {
@@ -48,4 +51,21 @@ export const arrangeFrameVideo = (frames:Frame[]):Frame[] => {
     frame["video"] = frameVideo;
     return frame;
   })
+}
+
+export const mapObjValues = (obj:Obj | undefined, type:(s:any) => any) => {
+  if (!obj) return {};
+  const newObj:Obj = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if ([null, undefined, NaN].includes(value)) continue;
+    newObj[key] = type(value);
+  }
+
+  return newObj;
+};
+
+export const createUrlParams = (obj:Obj | undefined): string => {
+  if (!obj) return '';
+  obj = mapObjValues(obj, value => String(value));
+  return new URLSearchParams(obj).toString();
 }

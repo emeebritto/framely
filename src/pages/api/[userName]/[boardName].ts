@@ -1,6 +1,6 @@
 import { Frame, RelatedFrames, BoardDataResult, BoardMetaData } from "types/services";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { onlyValues, arrangeFrameVideo } from "utils";
+import { onlyValues, arrangeFrameVideo, createUrlParams } from "utils";
 import { twoHour } from "consts";
 import cache from "memory-cache";
 import axios from "axios";
@@ -96,11 +96,12 @@ const load_data = async(
   const cachedBoard = cache.get(BOARD_KEY);
   const cachedBoardFrames = cache.get(BOOKMARK_KEY);
   const boardData:BoardDataResult = cachedBoard || await load_board(userName, boardName, BOARD_KEY);
+  const frames_count = boardData?.metadata?.pin_count || 0;
   if (bookmark && boardData.metadata) {
     const boardFrames:BoardDataResult = cachedBoardFrames || await load_more_frames(boardData.metadata, bookmark, BOOKMARK_KEY);
-    return {...boardFrames};
+    return { ...boardFrames, frames_count };
   }
-  return {...boardData};
+  return { ...boardData, frames_count };
 };
 
 
@@ -117,18 +118,17 @@ export default async function handler(
   const boardName:string = String(req.query?.boardName || "");
   const bookmark:string = String(req.query?.bookmark || "");
   const only:string = String(req.query?.only || "");
-  const noMetadata:boolean = Boolean(req.query?.noMetadata);
+  const noMetadata:number|typeof NaN = parseInt(String(req.query?.noMetadata));
 
 
   try {
     const boardData:BoardDataResult = await load_data(userName, boardName, bookmark);
     const target:any[]|[] = only ? extractProperty(only, boardData.frames) : [];
-    const frames_count = boardData?.metadata?.pin_count || 0;
-    const nextLink = `https://framely.vercel.app/api/${userName}/${boardName}?bookmark=${boardData?.bookmark}`;
+    const params:string = createUrlParams({ noMetadata, only, bookmark: boardData?.bookmark });
+    const nextLink = `https://framely.vercel.app/api/${userName}/${boardName}?${params}`;
     if (noMetadata) delete boardData.metadata;
     res.json({
       ...boardData,
-      frames_count,
       frames: target || boardData.frames,
       next: boardData.bookmark ? nextLink : null
     });
