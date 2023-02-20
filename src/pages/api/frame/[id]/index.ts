@@ -22,7 +22,8 @@ export default async function handler(
     return res.status(200).json(cachedResponse);
   }
 
-  const jsonDataPattern = /<script id=\"__PWS_DATA__\" type=\"application\/json\">(.+)<\/script><link data-chunk="DesktopUnauthPageWrapper"/g;
+  // const jsonDataPattern = /<script id=\"__PWS_DATA__\" type=\"application\/json\">(.+)<\/script><link data-chunk="DesktopUnauthPageWrapper"/g;
+  const jsonDataPattern = /<script id=\"__PWS_DATA__\" type=\"application\/json\">(.+)<\/script><script id="__LOADABLE_REQUIRED_CHUNKS__" type="application\/json"/g;
   const data = await axios({
     url: `https://${process.env.BASE_URL_PRESOURCE_TARGET}/pin/${frameId}/?mt=login`,
     method: "GET"
