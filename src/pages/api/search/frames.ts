@@ -1,5 +1,6 @@
+import { SearchResponse, Frame, VideoInfor } from "types/services";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { SearchResponse, Frame } from "types/services";
+import { hlsV4to720p } from "utils";
 import cache from "memory-cache";
 import { twoHour } from "consts";
 import axios from "axios";
@@ -11,6 +12,7 @@ interface Exception {
 
 interface LoadMoreParams {
   query:string;
+  scope:string;
   bookmark:string;
 }
 
@@ -40,10 +42,10 @@ const getUnsplashImgs = async({ query, per_page, page }:UnsplashImgsParams) => {
 
 
 
-const getPinterestImgs = async({ query }:{query:string}) => {
+const getPinterestImgs = async({ query, scope="pins" }:{query:string, scope:string}) => {
   const url = process.env.BASE_URL_PSEARCH;
   const search = `?source_url=/search/pins/?q=${query}&rs=typed`;
-  const config = `&data={%22options%22:{%22article%22:%22%22,%22appliedProductFilters%22:%22---%22,%22query%22:%22${query}%22,%22scope%22:%22pins%22,%22auto_correction_disabled%22:%22%22,%22top_pin_id%22:%22%22,%22filters%22:%22%22},%22context%22:{}}&_=1666411308222`;
+  const config = `&data={%22options%22:{%22article%22:%22%22,%22appliedProductFilters%22:%22---%22,%22query%22:%22${query}%22,%22scope%22:%22${scope}%22,%22auto_correction_disabled%22:%22%22,%22top_pin_id%22:%22%22,%22filters%22:%22%22},%22context%22:{}}&_=1666411308222`;
 
   return axios({
     url: url + search + config,
@@ -85,7 +87,7 @@ const getPinterestImgs = async({ query }:{query:string}) => {
 
 
 
-const load_more_pins = async({ query, bookmark }:LoadMoreParams) => {
+const load_more_pins = async({ query, scope="pins", bookmark }:LoadMoreParams) => {
   const url = process.env.BASE_URL_PSEARCH;
   const params = new URLSearchParams();
 
@@ -151,6 +153,7 @@ export default async function handler(
   res: NextApiResponse<SearchResponse|Exception>
 ) {
   const query_raw = String(req.query?.query || "");
+  const scope = String(req.query?.scope || "pins");
 
   if (!query_raw) {
     res.status(404);
@@ -181,16 +184,22 @@ export default async function handler(
     pdata = cachedResponse;
   } else {
     pdata = bookmark
-      ? await load_more_pins({ query, bookmark })
-      : await getPinterestImgs({ query })
+      ? await load_more_pins({ query, scope, bookmark })
+      : await getPinterestImgs({ query, scope })
 
     pdata.data = pdata.data.map((frame:Frame) => {
       frame.frameType = "Frame_p9";
+      let frameVideo:VideoInfor|null = frame?.videos?.video_list?.V_HLSV4 || null;
+      if (frameVideo) {
+        frameVideo.url = hlsV4to720p(frameVideo.url);
+        // delete frame.videos;
+      }
+      frame["video"] = frameVideo;
       return frame;
     });
 
     pdata.data = pdata.data.filter((frame:Frame) => frame.type == "pin");
-    cache.put(PKEY, pdata, twoHour);
+    // cache.put(PKEY, pdata, twoHour);
   }
 
 
