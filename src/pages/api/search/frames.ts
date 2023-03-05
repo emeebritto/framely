@@ -2,7 +2,7 @@ import { SearchResponse, Frame, VideoInfor } from "types/services";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { hlsV4to720p } from "utils";
 import cache from "memory-cache";
-import { twoHour } from "consts";
+import { oneHour } from "consts";
 import axios from "axios";
 
 interface Exception {
@@ -199,7 +199,7 @@ export default async function handler(
     });
 
     pdata.data = pdata.data.filter((frame:Frame) => frame.type == "pin");
-    // cache.put(PKEY, pdata, twoHour);
+    cache.put(PKEY, pdata, oneHour);
   }
 
 
