@@ -99,7 +99,7 @@ const load_more_pins = async({ query, scope="pins", bookmark }:LoadMoreParams) =
       "article":"",
       "appliedProductFilters":"---",
       "query": "${query}",
-      "scope":"pins",
+      "scope": "${scope}",
       "auto_correction_disabled":"",
       "top_pin_id":"",
       "filters":"",
@@ -172,7 +172,7 @@ export default async function handler(
     });
   }
 
-  const PKEY = `query::${query}::${bookmark}`;
+  const PKEY = `query::${query}::${bookmark}::${scope}`;
   const UKEY = `query::${query}::${per_page}::${page}`;
   let pdata = {
     data: [] as Frame[],
