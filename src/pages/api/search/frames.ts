@@ -44,11 +44,25 @@ const getUnsplashImgs = async({ query, per_page, page }:UnsplashImgsParams) => {
 
 const getPinterestImgs = async({ query, scope="pins" }:{query:string, scope:string}) => {
   const url = process.env.BASE_URL_PSEARCH;
-  const search = `?source_url=/search/pins/?q=${query}&rs=typed`;
-  const config = `&data={%22options%22:{%22article%22:%22%22,%22appliedProductFilters%22:%22---%22,%22query%22:%22${query}%22,%22scope%22:%22${scope}%22,%22auto_correction_disabled%22:%22%22,%22top_pin_id%22:%22%22,%22filters%22:%22%22},%22context%22:{}}&_=1666411308222`;
+  const params = new URLSearchParams();
+
+  params.append('source_url', `search/pins/?q=${query}&rs=typed`);
+  params.append('data', `{
+    "options": {
+      "article":"",
+      "appliedProductFilters":"---",
+      "query": "${query}",
+      "scope": "${scope}",
+      "auto_correction_disabled":"",
+      "top_pin_id":"",
+      "filters":""
+    },
+    "context":{}
+  }`);
+  params.append("&_", "1666411308222")
 
   return axios({
-    url: url + search + config,
+    url: url + "?" + params.toString(),
     method: 'GET',
     headers: {
       "Host": process.env.BASE_URL_PRESOURCE_TARGET,
@@ -84,7 +98,6 @@ const getPinterestImgs = async({ query, scope="pins" }:{query:string, scope:stri
     return { data: [], bookmark: "" };
   })
 };
-
 
 
 const load_more_pins = async({ query, scope="pins", bookmark }:LoadMoreParams) => {
