@@ -18,7 +18,7 @@ function MyApp({ Component, pageProps }:AppProps) {
       <Head>
         <title>Framely</title>
         <meta name="description" content="Each frame, one History"/>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/framely.ico"/>
       </Head>
       <Header/>
         <SearchProvider>
