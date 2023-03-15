@@ -219,6 +219,11 @@ export interface RelatedFrames {
 	bookmark:string;
 };
 
+export interface VisualSearchResult {
+	query_frame:Frame;
+	results:Frameslist[];
+	bookmark:string;
+};
 
 export interface SearchResponse {
 	query:string;
