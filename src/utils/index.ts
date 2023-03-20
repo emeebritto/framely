@@ -83,8 +83,9 @@ export function story2Videos(frame:Frame):VideoInfor[]|[] {
   const storyPages = frame?.story_pin_data?.pages || null;
   if (!storyPages) return [];
   const pagesBlocks = storyPages.map(d => d.blocks).flat();
-  const videos = pagesBlocks.map(d => d.video.video_list["V_HLSV3_MOBILE"]);
-  return videos.map(v => {
+  if (!pagesBlocks) return [];
+  const videos = pagesBlocks.map(d => d?.video?.video_list["V_HLSV3_MOBILE"] || null);
+  return videos.filter(v => !!v).map(v => {
     v.url = hlsV4to720p(v.url);
     return v;
   });
