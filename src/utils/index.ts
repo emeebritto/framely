@@ -69,3 +69,23 @@ export const createUrlParams = (obj:Obj | undefined): string => {
   obj = mapObjValues(obj, value => String(value));
   return new URLSearchParams(obj).toString();
 }
+
+export function restructVideo(frame:Frame):VideoInfor|null {
+  let frameVideo:VideoInfor|null = frame?.videos?.video_list?.V_HLSV4 || null;
+  if (frameVideo) {
+    frameVideo.url = hlsV4to720p(frameVideo.url);
+    // delete frame.videos;
+  }
+  return frameVideo;
+}
+
+export function story2Videos(frame:Frame):VideoInfor[]|[] {
+  const storyPages = frame?.story_pin_data?.pages || null;
+  if (!storyPages) return [];
+  const pagesBlocks = storyPages.map(d => d.blocks).flat();
+  const videos = pagesBlocks.map(d => d.video.video_list["V_HLSV3_MOBILE"]);
+  return videos.map(v => {
+    v.url = hlsV4to720p(v.url);
+    return v;
+  });
+}

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { RelatedFrames, Frame } from "types/services";
+import { restructVideo, story2Videos } from "utils";
 import cache from "memory-cache";
 import { twoHour } from "consts";
 import axios from "axios";
@@ -54,8 +55,8 @@ export default async function handler(
   const apiUrl = process.env.BASE_URL_PREL_IMG;
   const query = `?source_url=/pin/${imageId}/?mt=login`;
   const config = bookmark
-    ? `&data={"options":{"field_set_key":"unauth_react","page_size":12,"pin":"${imageId}","prepend":false,"add_vase":true,"show_seo_canonical_pins":true,"source":"unknown","top_level_source":"unknown","top_level_source_depth":1,"bookmarks":["${bookmark}"]},"context":{}}&_=1666770896008`
-    : `&data={"options":{"field_set_key":"unauth_react","page_size":12,"pin":"${imageId}","prepend":false,"add_vase":true,"show_seo_canonical_pins":true,"source":"unknown","top_level_source":"unknown","top_level_source_depth":1},"context":{}}&_=1666770789401`;
+    ? `&data={"options":{"field_set_key":"unauth_react","page_size":16,"pin":"${imageId}","prepend":false,"add_vase":true,"show_seo_canonical_pins":true,"source":"unknown","top_level_source":"unknown","top_level_source_depth":1,"bookmarks":["${bookmark}"]},"context":{}}&_=1666770896008`
+    : `&data={"options":{"field_set_key":"unauth_react","page_size":16,"pin":"${imageId}","prepend":false,"add_vase":true,"show_seo_canonical_pins":true,"source":"unknown","top_level_source":"unknown","top_level_source_depth":1},"context":{}}&_=1666770789401`;
 
   const data = await axios({
     url: apiUrl + query + config,
@@ -67,7 +68,8 @@ export default async function handler(
   if (!data) return res.status(404).json({ msg: "content not found (something is wrong)" });  
 
   const frames = data.resource_response.data.map((frame:Frame) => {
-    frame["frameType"] = "Frame_p9";
+    frame.frameType = "Frame_p9";
+    frame["video"] = frame?.videos ? restructVideo(frame) : story2Videos(frame)[0];
     return frame;
   }).filter((frame:Frame) => frame.type == "pin");
 
