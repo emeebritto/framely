@@ -27,7 +27,7 @@ const Footer:React.FC = () => {
 	return (
     <ViewPort>
       <a
-        href="https://www.linkedin.com/in/emerson-britto/"
+        href="#"
         target="_blank"
         rel="noopener noreferrer"
       >
